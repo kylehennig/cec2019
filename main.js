@@ -194,9 +194,17 @@ class Board{
     // PLEASE NOTE
         this.response.itemsLocated.forEach(async (item) => {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
-                await this.server.collectItem(item.id);
+                if (item.coveredBy === undefined) {
+                    await this.server.collectItem(item.id);
+                }
             }
         });
+        for (let i = 0; i < this.response.itemsLocated.size(); i++) {
+            if (item.x == this.response.location.x && item.y == this.response.location.y) {
+                await collectItems();
+                break;
+            }
+        }
     }
 
     updateBoard(response){
