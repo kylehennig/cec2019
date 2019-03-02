@@ -4,11 +4,11 @@ import Server from './server';
 class Board {
 
     constructor(response, server) {
-        this.setup(response, server);
-        this.enterLoop();
+        this.setup(response, server).then(this.enterLoop());
+        //this.enterLoop();
     }
 
-    setup(response, server) {
+    async setup(response, server) {
         console.log(response);
         this.constants = response.constants;
         this.server = server;
@@ -26,7 +26,7 @@ class Board {
         this.depositedRecycle = 0;
         this.depositedGarbage = 0;
 
-        this.totalPickup = this.constants.TOTAL_COUNT.ORGANIC + this.constants.TOTAL_COUNT.RECYCLE + this.constants.TOTAL_COUNT.TRASH;
+        this.totalPickup = this.constants.TOTAL_COUNT.ORGANIC + this.constants.TOTAL_COUNT.RECYCLE + this.constants.TOTAL_COUNT.GARBAGE;
 
         this.createSections();
         this.pickCorner();
@@ -35,7 +35,7 @@ class Board {
 
     async enterLoop() {
         // Search and Pickup
-        while ((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle) < this.totalPickup) {
+        while ((this.response.itemsCollected.length + this.response.itemsHeld.length + this.response.itemsBin.length) < this.totalPickup) {
 
             let binStatus = this.shouldVisitBins();
 
@@ -52,17 +52,18 @@ class Board {
 
             // Next Rect to search
             let dest = this.nextRect();
-            if (dest === null) {
-                await this.finalDropOff();
-                this.response = await this.server.getInstance();
-            }
+            // if (dest === null) {
+            //     await this.finalDropOff();
+            //     this.response = await this.server.getInstance();
+            //     break;
+            // }
             let rectClear = false;
-            this.move(dest.x, dest.y);
+            await this.move(dest.x, dest.y);
 
             this.response = await this.server.getInstance();
 
             // Scan Rect
-            this.server.scanArea();
+            await this.server.scanArea();
             this.response = await this.server.getInstance();
 
             while (!rectClear) {
@@ -71,17 +72,18 @@ class Board {
 
 
                 //Move back to center
-                this.move(dest.x, dest.y);
+                await this.move(dest.x, dest.y);
                 this.response = await this.server.getInstance();
 
                 // Scan Rect to see if there was any overlap
-                this.server.scanArea();
+                await this.server.scanArea();
                 this.response = await this.server.getInstance();
 
                 rectClear = this.checkClear();
             }
 
         }
+        console.log("EXIT WHILE");
         await this.finalDropOff();
     }
 
@@ -452,7 +454,7 @@ class Board {
             }
         }
 
-        for (const item of this.response.itemBin) {
+        for (const item of this.response.itemsBin) {
             if (item.type == "ORGANIC") {
                 organicBin++;
             } else if (item.type == "GARBAGE") {
