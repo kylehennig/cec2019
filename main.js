@@ -9,7 +9,15 @@ class Board{
 
         this.binOrganicContents =0;
         this.binRecycleContents = 0;
-        this.binTrashContents =0;
+        this.binGarbageContents =0;
+
+        this.holdingOrganic = 0;
+        this.holdingRecycle = 0;
+        this.holdingGarbage = 0;
+
+        this.depositedOrganic = 0;
+        this.depositedRecycle = 0;
+        this.depositedGarbage = 0;
 
         this.updateBoard(response);
         this.createSections();
