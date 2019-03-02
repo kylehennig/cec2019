@@ -8,7 +8,7 @@ class Server {
      * Connects to the server.
      * @returns {Promise} A promise resolving to the payload object.
      */
-    init() {
+    async init() {
         return getInstance();
     }
 
@@ -16,7 +16,7 @@ class Server {
      * Gets the current instance.
      * @returns {Promise} A promise resolving to the payload object.
      */
-    getInstance() {
+    async getInstance() {
         return axios.post(url + '/instance', { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
