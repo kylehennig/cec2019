@@ -38,8 +38,7 @@ class Board{
     }
 
     pickCorner(){
-        let top = false;
-        let right= false;
+
         let destY = 0;
         let destX = 0;
 
