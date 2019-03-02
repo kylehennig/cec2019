@@ -14,7 +14,17 @@ class Server {
      */
     async init() {
         setInterval(this._dispatch.bind(this), 500);
-        return this.getInstance();
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + '/instance')
+                    .then(this._onResponse)
+                    .then(payload => resolve(payload))
+                    .catch(error => {
+                        this._onError(error);
+                        reject();
+                    });
+            });
+        });
     }
 
     /**
@@ -24,12 +34,12 @@ class Server {
     async getInstance() {
         return new Promise((resolve, reject) => {
             this._queue.push(() => {
-                this._post(url + '/instance')
+                this._get(url + '/instance')
                     .then(this._onResponse)
                     .then(payload => resolve(payload))
                     .catch(error => {
                         this._onError(error);
-                        reject()
+                        reject();
                     });
             });
         });
@@ -122,6 +132,14 @@ class Server {
             'Content-Type': 'application/json',
             'token': token
         };
+    }
+
+    _get(url) {
+        return axios({
+            method: 'get',
+            url: url,
+            headers: this._createHeaders()
+        });
     }
 
     _post(url) {
