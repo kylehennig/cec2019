@@ -10,7 +10,7 @@ class Board{
     }
 
     setup(response, server) {
-        console.log(this.response);
+        console.log(response);
         this.constants = response.constants;
         this.server = server;
         this.response = response;
@@ -215,17 +215,17 @@ class Board{
     // itemsLocated may change after every scan, may want array of known item
     // PLEASE NOTE
     // PLEASE NOTE
-        for (const item of this.response.itemsLocated) {
+        this.response.itemsLocated.forEach(async (item) => {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 if (item.coveredBy === undefined) {
                     await this.server.collectItem(item.id);
                 }
             }
-        }
+        });
         this.response = await this.server.getInstance();
-        for (const item of this.response.itemsLocated) {
+        for (let i = 0; i < this.response.itemsLocated.length; i++) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
-                await this.collectItems();
+                await collectItems();
                 break;
             }
         }
