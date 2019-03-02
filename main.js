@@ -36,6 +36,19 @@ class Board{
         // Search and Pickup
         while((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle)< this.totalPickup){
 
+            let binStatus = this.shouldVisitBins();
+
+            if(binStatus.garbage){
+                goToBin("GARBAGE");
+            }
+            if(binStatus.recycle){
+                goToBin("RECYCLE");
+
+            }
+            if(binStatus.organic){
+                goToBin("ORGANIC");
+            }
+
             // Next Rect to search
             let dest = this.nextRect();
             if (dest === null) {
@@ -356,6 +369,47 @@ class Board{
             }
         }
         return true;
+    }
+
+    shouldVisitBins(){
+        let destBin = {recycle: false, organic: false, garbage: false};
+        let organicHeld =0;
+        let garbageHeld =0;
+        let recycleHeld = 0;
+
+        let organicBin = 0;
+        let recycleBin =0;
+        let garbageBin =0;
+
+        for(const item of this.response.itemsHeld){
+            if(item.type == "ORGANIC"){
+                organicHeld ++;
+            }else if (item.type == "GARBAGE") {
+                garbageHeld ++;
+            } else if (item.type == "RECYCLE") {
+                recycleHeld ++;
+            }
+        }
+
+        for(const item of this.response.itemBin){
+            if(item.type == "ORGANIC"){
+                organicBin ++;
+            }else if (item.type == "GARBAGE") {
+                garbageBin ++;
+            } else if (item.type == "RECYCLE") {
+                recycleBin ++;
+            }
+        }
+
+        if(organicHeld + organicBin >= this.response.constants.BIN_CAPACITY.ORGANIC && organicBin/this.response.constants.BIN_CAPACITY.ORGANIC < 0.75){
+            destBin.organic = true;
+        } else if (garbageHeld + garbageBin >= this.response.constants.BIN_CAPACITY.GARBAGE && garbageBin/this.response.constants.BIN_CAPACITY.GARBAGE < 0.75) {
+            destBin.garbage = true;
+        }else if(recycleHeld + recycleBin  >= this.response.constants.BIN_CAPACITY.RECYCLE && recycleBin/this.response.constants.BIN_CAPACITY.RECYCLE < 0.75){
+            destBin.recycle = true;
+        }
+
+        return destBin;
     }
 }
 
