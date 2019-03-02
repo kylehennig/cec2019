@@ -61,6 +61,8 @@ class Board{
         }else {
             destX = this.constants.SCAN_RADIUS + 1;
         }
+
+        this.move(destX,destY,this.response);
     }
 
     async move(destX, destY, response) {
