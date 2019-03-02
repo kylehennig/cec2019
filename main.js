@@ -79,20 +79,20 @@ class Board{
 
     async unloadItems() {
         if (this.constants.BIN_LOCATION.ORGANIC.x == this.response.location.x && this.constants.BIN_LOCATION.ORGANIC.y == this.response.location.y) {
-            this.response.itemsHeld.forEach(function(item) {
+            this.response.itemsHeld.forEach(async (item) => {
                 if (item.type == "ORGANIC") {
                     await this.server.unloadItem(item.id);
                 }
             });
         }
         else if (this.constants.BIN_LOCATION.GARBAGE.x == this.response.location.x && this.constants.BIN_LOCATION.GARBAGE.y == this.response.location.y) {
-            this.response.itemsHeld.forEach(function(item) {
+            this.response.itemsHeld.forEach(async (item) => {
                 if (item.type == "GARBAGE") {
                     await this.server.unloadItem(item.id);
                 }
             });
         } else if (this.constants.BIN_LOCATION.RECYCLE.x == this.response.location.x && this.constants.BIN_LOCATION.RECYCLE.y == this.response.location.y) {
-            this.response.itemsHeld.forEach(function(item) {
+            this.response.itemsHeld.forEach(async (item) => {
                 if (item.type == "RECYCLE") {
                     await this.server.unloadItem(item.id);
                 }
@@ -106,7 +106,7 @@ class Board{
     // itemsLocated may change after every scan, may want array of known item
     // PLEASE NOTE
     // PLEASE NOTE
-        this.response.itemsLocated.forEach(function(item) {
+        this.response.itemsLocated.forEach(async (item) => {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 await this.server.collectItem(item.id);
             }
