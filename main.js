@@ -53,6 +53,7 @@ class Board{
             let dest = this.nextRect();
             if (dest === null) {
                 await this.finalDropOff();
+                this.response = await this.server.getInstance();
             }
             let rectClear = false;
             this.move(dest.x,dest.y);
@@ -122,6 +123,7 @@ class Board{
                 await this.goToBin("RECYCLE");
                 recycleDone = true;
             }
+            this.response = await this.server.getInstance();
         }
         await this.server.finish();
     }
@@ -134,7 +136,9 @@ class Board{
         } else if (type == "GARBAGE") {
             await this.move(this.constants.BIN_LOCATION.GARBAGE.x, this.constants.BIN_LOCATION.GARBAGE.y);
         }
+        this.response = await this.server.getInstance();
         await this.unloadItems();
+        this.response = await this.server.getInstance();
     }
 
     async unloadItems() {
@@ -160,6 +164,7 @@ class Board{
                     await this.server.unloadItem(this.response.itemsHeld[i].id);
                 }
             }
+            this.response = await this.server.getInstance();
             // this.response.itemsHeld.forEach(async (item) => {
             //     if (item.type == "ORGANIC") {
             //         await this.server.unloadItem(item.id);
@@ -176,6 +181,7 @@ class Board{
                     await this.server.unloadItem(this.response.itemsHeld[i].id);
                 }
             }
+            this.response = await this.server.getInstance();
             // this.response.itemsHeld.forEach(async (item) => {
             //     if (item.type == "GARBAGE") {
             //         await this.server.unloadItem(item.id);
@@ -191,6 +197,7 @@ class Board{
                     await this.server.unloadItem(this.response.itemsHeld[i].id);
                 }
             }
+            this.response = await this.server.getInstance();
             // this.response.itemsHeld.forEach(async (item) => {
             //     if (item.type == "RECYCLE") {
             //         await this.server.unloadItem(item.id);
@@ -212,12 +219,14 @@ class Board{
                 }
             }
         });
+        this.response = await this.server.getInstance();
         for (let i = 0; i < this.response.itemsLocated.size(); i++) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 await collectItems();
                 break;
             }
         }
+        this.response = await this.server.getInstance();
     }
 
     updateBoard(response){
