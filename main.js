@@ -2,7 +2,7 @@ import Server from './server';
 
 class Board {
     constructor(response, server) {
-        this.setup(response, server).then(this.enterLoop);
+        this.setup(response, server);
         //this.enterLoop();
     }
 
@@ -28,10 +28,11 @@ class Board {
 
         this.createSections();
         await this.pickCorner();
+        await this.enterLoop();
     }
 
     async enterLoop() {
-
+        this.response = await this.server.getInstance();
         // Search and Pickup
         while ((this.response.itemsCollected.length + this.response.itemsHeld.length + this.response.itemsBin.length) < this.totalPickup) {
 
@@ -57,14 +58,16 @@ class Board {
                 break;
             }
             let rectClear = false;
+            console.log("TEST0");
             await this.move(dest.x, dest.y);
+            console.log("Test1");
 
             this.response = await this.server.getInstance();
-
+console.log("Test2");
             // Scan Rect
             await this.server.scanArea();
             this.response = await this.server.getInstance();
-
+console.log("Test3");
             while (!rectClear) {
                 // Pick up all items
                 await this.collectRect(dest);
@@ -80,6 +83,7 @@ class Board {
 
                 rectClear = this.checkClear();
             }
+            console.log("Test4");
 
         }
         console.log("EXIT WHILE");
@@ -353,9 +357,10 @@ class Board {
         } else {
             destX = this.constants.ROOM_DIMENSIONS.X_MIN + this.constants.SCAN_RADIUS;
         }
-
+        console.log("INNERTEST0");
         await this.move(destX, destY);
         this.response = await this.server.getInstance();
+        console.log("INNERTEST1");
 
     }
 
