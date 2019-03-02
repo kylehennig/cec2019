@@ -6,10 +6,14 @@
   "dependencies": {
     "axios": "^0.18.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "babel-node main.js"
   },
   "repository": {
     "type": "git",
