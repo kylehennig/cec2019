@@ -74,7 +74,7 @@ class Server {
                 console.log('Error: invalid direction.');
                 return;
             }
-            this._post(url + `/finish/${direction}`)
+            this._post(url + `/turn/${direction}`)
                 .then(this._onResponse)
                 .catch(this._onError);
         });
