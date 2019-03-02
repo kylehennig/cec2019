@@ -38,6 +38,9 @@ class Board{
 
             // Next Rect to search
             let dest = this.nextRect();
+            if (dest === null) {
+                await this.finalDropOff();
+            }
             let rectClear = false;
             this.move(dest.x,dest.y);
 
@@ -64,6 +67,35 @@ class Board{
             }
 
         }
+    }
+
+    async finalDropOff() {
+        let organicsDone = false;
+        let garbageDone = false;
+        let recycleDone = false;
+        while (!organicsDone && !garbageDone && !recycleDone) {
+            if (!organicsDone) {
+                let organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
+            } else {let organicsDist = Infinity}
+            if (!garbageDone) {
+                let garbageDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.GARBAGE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.GARBAGE.y);
+            } else {let garbageDist = Infinity}
+            if (!recycleDone) {
+                let recycleDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.RECYCLE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.RECYCLE.y);
+            } else {let recycleDist = Infinity}
+            let min = Math.min(organicsDist, garbageDist, recycl)
+            if (!organicsDone && organicsDist === min) {
+                await this.goToBin("ORGANIC");
+                organicsDone = true;
+            } else if (!garbageDone && garbageDist === min) {
+                await this.goToBin("GARBAGE");
+                garbageDone = true;
+            } else if (!recycleDone && recycleDist === min) {
+                await this.goToBin("RECYCLE");
+                recycleDone = true;
+            }
+        }
+        await this.server.finish();
     }
 
     async goToBin(type) {
