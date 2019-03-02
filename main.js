@@ -91,13 +91,13 @@ class Board{
             let recycleDist = 0;
             if (!organicsDone) {
                 organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
-            } else {let organicsDist = Infinity}
+            } else {organicsDist = Infinity}
             if (!garbageDone) {
                 garbageDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.GARBAGE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.GARBAGE.y);
-            } else {let garbageDist = Infinity}
+            } else {garbageDist = Infinity}
             if (!recycleDone) {
                 recycleDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.RECYCLE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.RECYCLE.y);
-            } else {let recycleDist = Infinity}
+            } else {recycleDist = Infinity}
             let min = Math.min(organicsDist, garbageDist, recycleDist)
             if (!organicsDone && organicsDist === min) {
                 await this.goToBin("ORGANIC");
