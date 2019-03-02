@@ -74,16 +74,31 @@ class Board{
         let garbageDone = false;
         let recycleDone = false;
         while (!organicsDone && !garbageDone && !recycleDone) {
+            let organicsDone = true;
+            let garbageDone = true;
+            let recycleDone = true;
+            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+                if (this.response.itemsHeld[i].type == "ORGANIC") {
+                    organicsDone = false;
+                } else if (this.response.itemsHeld[i].type == "GARBAGE") {
+                    garbageDone = false;
+                } else if (this.response.itemsHeld[i].type == "RECYCLE") {
+                    recycleDone = false;
+                }
+            }
+            let organicsDist = 0;
+            let garbageDist = 0;
+            let recycleDist = 0;
             if (!organicsDone) {
-                let organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
-            } else {let organicsDist = Infinity}
+                organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
+            } else {organicsDist = Infinity}
             if (!garbageDone) {
-                let garbageDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.GARBAGE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.GARBAGE.y);
-            } else {let garbageDist = Infinity}
+                garbageDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.GARBAGE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.GARBAGE.y);
+            } else {garbageDist = Infinity}
             if (!recycleDone) {
-                let recycleDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.RECYCLE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.RECYCLE.y);
-            } else {let recycleDist = Infinity}
-            let min = Math.min(organicsDist, garbageDist, recycl)
+                recycleDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.RECYCLE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.RECYCLE.y);
+            } else {recycleDist = Infinity}
+            let min = Math.min(organicsDist, garbageDist, recycleDist)
             if (!organicsDone && organicsDist === min) {
                 await this.goToBin("ORGANIC");
                 organicsDone = true;
