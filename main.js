@@ -317,8 +317,8 @@ class Board{
 
     insideRect(rectCenter, x, y) {
 	return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
-	    && (x <= rectCenter.x + this.response.SCAN_RADIUS)
-	    && (x >= rectCenter.x - this.response.SCAN_RADIUS);
+	    && (x <= rectCenter.x + this.response.SCAN_RADIUS - 1)
+	    && (x >= rectCenter.x - this.response.SCAN_RADIUS + 1);
     }
 
     /**
