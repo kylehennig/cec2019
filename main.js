@@ -4,6 +4,7 @@ import Server from './server';
 class Board{
 
     constructor(response, server){
+        console.log(this.response);
         this.constants = response.constants;
         this.server = server;
         this.response = response;
@@ -142,6 +143,8 @@ class Board{
 
       // Update board state
       this.response = await this.server.getInstance();
+      console.log("After move:")
+      console.log(this.response);
     }
 
     pickCorner(){
@@ -168,7 +171,9 @@ class Board{
         }else {
             destX = this.constants.SCAN_RADIUS + 1;
         }
+
         this.move(destX,destY);
+
     }
 
     /**
@@ -200,7 +205,7 @@ class Board{
 
     checkClear(){
         // Check if a rectanlge has had all items picked up
-        
+
     }
 
 }
