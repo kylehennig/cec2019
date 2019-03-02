@@ -10,10 +10,15 @@ class Board{
         this.binOrganicContents =0;
         this.binRecycleContents = 0;
         this.binTrashContents =0;
+        this.totalBin = this.binOrganicContents + this.binRecycleContents + this.binTrashContents;
 
         this.updateBoard(response);
         this.createSections();
         this.pickCorner();
+
+        while(this.totalBin < GOAL){
+            
+        }
     }
 
     updateBoard(response){
@@ -128,7 +133,6 @@ class Board{
         }else {
             destX = this.constants.SCAN_RADIUS + 1;
         }
-
         this.move(destX,destY);
     }
 
@@ -151,8 +155,10 @@ class Board{
 	if (shortestDistance === null) {
 	    return null;
 	}
-	return {"x": x, "y": y};
+	   return {"x": x, "y": y};
     }
+
+
 }
 
 
