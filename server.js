@@ -69,11 +69,11 @@ class Server {
      * @param {string} direction 
      */
     turn(direction) {
+        if (!['N', 'E', 'S', 'W'].includes(direction)) {
+            console.log('Error: invalid direction.');
+            return;
+        }
         this._queue.push(() => {
-            if (!['N', 'E', 'S', 'W'].includes(direction)) {
-                console.log('Error: invalid direction.');
-                return;
-            }
             this._post(url + `turn/${direction}`)
                 .then(this._onResponse)
                 .catch(this._onError);
