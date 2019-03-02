@@ -4,9 +4,16 @@ const url = 'http://cec2019.ca/'
 
 class Server {
     /**
-     * Creates a new instance.
+     * Connects to the server.
      */
-    createInstance() {
+    init() {
+        getInstance();
+    }
+
+    /**
+     * Gets the current instance.
+     */
+    getInstance() {
         axios.post(url + '/instance')
             .then(_onResponse)
             .catch(_onError);
