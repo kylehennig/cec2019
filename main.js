@@ -31,9 +31,8 @@ class Board{
 
             // Next Rect to search
             let dest = this.nextRect();
-            let rectClear false;
+            let rectClear = false;
             this.move(dest.x,dest.y);
-            this.response = await server.getInstance();
 
             // Scan Rect
             this.server.ScanArea;
@@ -42,6 +41,7 @@ class Board{
             while(!rectClear){
                 // Pick up all items
                 this.collectRect();
+            
 
                 //Move back to center
                 this.move(dest.x,dest.y);
