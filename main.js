@@ -37,6 +37,72 @@ class Board{
         this.rectangles = rectangles;
     }
 
+    async move(destX, destY) {
+      // move north optimized for current direction
+      if (this.response.direction == "N") {
+        if (this.response.location.y < destY) {
+          for (let i = 0; i < destY - this.response.location.y; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move east optimized for current direction
+      else if (this.response.direction == "E") {
+        if (this.response.location.x < destX) {
+          for (let i = 0; i < destX - this.this.response.location.x; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move west optimized for current direction
+      else if (this.response.direction == "W") {
+        if (this.response.location.x > destX) {
+          for (let i = 0; i < this.response.location.x - destX; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move south optimized for current direction
+      else if (this.response.direction == "S") {
+        if (this.response.location.y > destY) {
+          for (let i = 0; i < this.response.location.y - destY; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move North if still required
+      if (this.response.location.y < destY) {
+        await server.rotate('N');
+        for (let i = 0; i < destY - this.response.location.y; i++) {
+          await server.move();
+        }
+      }
+      // move South if still required
+      if (this.response.location.y > destY) {
+        await server.rotate('S');
+        for (let i = 0; i < this.response.location.y - destY; i++) {
+          await server.move();
+        }
+      }
+      // move East if still required
+      if (this.response.location.x < destx) {
+        await server.rotate('E');
+        for (let i = 0; i < destx - this.response.location.x; i++) {
+          await server.move();
+        }
+      }
+      // move West if still required
+      if (this.response.location.x > destx) {
+        await server.rotate('W');
+        for (let i = 0; i < this.response.location.x - destx; i++) {
+          await server.move();
+        }
+      }
+
+      // Update board state
+      this.response = await server.getInstance();
+    }
+
     pickCorner(){
 
         let destY = 0;
@@ -62,70 +128,7 @@ class Board{
             destX = this.constants.SCAN_RADIUS + 1;
         }
 
-        this.move(destX,destY,this.response);
-    }
-
-    async move(destX, destY, response) {
-      // move north optimized for current direction
-      if (response.direction == "N") {
-        if (response.location.y < destY) {
-          for (let i = 0; i < destY - response.location.y; i++) {
-            await server.move();
-          }
-        }
-      }
-      // move east optimized for current direction
-      else if (response.direction == "E") {
-        if (response.location.x < destX) {
-          for (let i = 0; i < destX - response.location.x; i++) {
-            await server.move();
-          }
-        }
-      }
-      // move west optimized for current direction
-      else if (response.direction == "W") {
-        if (response.location.x > destX) {
-          for (let i = 0; i < response.location.x - destX; i++) {
-            await server.move();
-          }
-        }
-      }
-      // move south optimized for current direction
-      else if (response.direction == "S") {
-        if (response.location.y > destY) {
-          for (let i = 0; i < response.location.y - destY; i++) {
-            await server.move();
-          }
-        }
-      }
-      // move North if still required
-      if (response.location.y < destY) {
-        await server.rotate('N');
-        for (let i = 0; i < destY - response.location.y; i++) {
-          await server.move();
-        }
-      }
-      // move South if still required
-      if (response.location.y > destY) {
-        await server.rotate('S');
-        for (let i = 0; i < response.location.y - destY; i++) {
-          await server.move();
-        }
-      }
-      // move East if still required
-      if (response.location.x < destx) {
-        await server.rotate('E');
-        for (let i = 0; i < destx - response.location.x; i++) {
-          await server.move();
-        }
-      }
-      // move West if still required
-      if (response.location.x > destx) {
-        await server.rotate('W');
-        for (let i = 0; i < response.location.x - destx; i++) {
-          await server.move();
-        }
-      }
+        this.move(destX,destY);
     }
 
     /**
@@ -155,20 +158,16 @@ class Board{
 async function main(){
 
     const server = new Server();
+    let response = await server.finish();
     let board;
 
     // Connect
     try{
-        let response = await server.init();
+        response = await server.init();
 
-        if (response.type === "FAILURE"){
-            console.log("Failed Init");
-        }else {
-            console.log("Init Success")
 
-            // Board setup
-            board = new Board(response);
-        }
+        // Board setup
+        board = new Board(response);
     } catch (err){
         console.log(err);
     }
