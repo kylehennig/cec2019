@@ -4,6 +4,11 @@ import Server from './server';
 class Board{
 
     constructor(response, server){
+	this.setup(response, server);
+	this.enterLoop();
+    }
+
+    setup(response, server) {
         console.log(this.response);
         this.constants = response.constants;
         this.server = server;
@@ -25,19 +30,21 @@ class Board{
 
         this.createSections();
         this.pickCorner();
+    }
 
+    async enterLoop() {
         // Search and Pickup
-        while((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle)< totalPickup){
+        while((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle)< this.totalPickup){
 
             // Next Rect to search
             let dest = this.nextRect();
-            let rectClear false;
+            let rectClear = false;
             this.move(dest.x,dest.y);
-            this.response = await server.getInstance();
+            this.response = await this.server.getInstance();
 
             // Scan Rect
-            this.server.ScanArea;
-            this.response = await server.getInstance();
+            this.server.scanArea();
+            this.response = await this.server.getInstance();
 
             while(!rectClear){
                 // Pick up all items
@@ -45,11 +52,11 @@ class Board{
 
                 //Move back to center
                 this.move(dest.x,dest.y);
-                this.response = await server.getInstance();
+                this.response = await this.server.getInstance();
 
                 // Scan Rect to see if there was any overlap
-                this.server.ScanArea;
-                this.response = await server.getInstance();
+                this.server.scanArea();
+                this.response = await this.server.getInstance();
 
                 rectClear = this.checkClear();
             }
@@ -143,7 +150,7 @@ class Board{
 
       // Update board state
       this.response = await this.server.getInstance();
-      console.log("After move:")
+	console.log("After move:");
       console.log(this.response);
     }
 
