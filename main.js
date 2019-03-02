@@ -1,11 +1,11 @@
 import Server from './server';
 
 
-class Board{
+class Board {
 
-    constructor(response, server){
-	       this.setup(response, server);
-         this.enterLoop();
+    constructor(response, server) {
+        this.setup(response, server);
+        this.enterLoop();
     }
 
     setup(response, server) {
@@ -14,9 +14,9 @@ class Board{
         this.server = server;
         this.response = response;
 
-        this.binOrganicContents =0;
+        this.binOrganicContents = 0;
         this.binRecycleContents = 0;
-        this.binGarbageContents =0;
+        this.binGarbageContents = 0;
 
         this.holdingOrganic = 0;
         this.holdingRecycle = 0;
@@ -35,18 +35,18 @@ class Board{
 
     async enterLoop() {
         // Search and Pickup
-        while((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle)< this.totalPickup){
+        while ((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle) < this.totalPickup) {
 
             let binStatus = this.shouldVisitBins();
 
-            if(binStatus.garbage){
+            if (binStatus.garbage) {
                 this.goToBin("GARBAGE");
             }
-            if(binStatus.recycle){
+            if (binStatus.recycle) {
                 this.goToBin("RECYCLE");
 
             }
-            if(binStatus.organic){
+            if (binStatus.organic) {
                 this.goToBin("ORGANIC");
             }
 
@@ -57,7 +57,7 @@ class Board{
                 this.response = await this.server.getInstance();
             }
             let rectClear = false;
-            this.move(dest.x,dest.y);
+            this.move(dest.x, dest.y);
 
             this.response = await this.server.getInstance();
 
@@ -65,13 +65,13 @@ class Board{
             this.server.scanArea();
             this.response = await this.server.getInstance();
 
-            while(!rectClear){
+            while (!rectClear) {
                 // Pick up all items
                 await this.collectRect(dest);
 
 
                 //Move back to center
-                this.move(dest.x,dest.y);
+                this.move(dest.x, dest.y);
                 this.response = await this.server.getInstance();
 
                 // Scan Rect to see if there was any overlap
@@ -107,13 +107,13 @@ class Board{
             let recycleDist = 0;
             if (!organicsDone) {
                 organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
-            } else {organicsDist = Infinity}
+            } else { organicsDist = Infinity }
             if (!garbageDone) {
                 garbageDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.GARBAGE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.GARBAGE.y);
-            } else {garbageDist = Infinity}
+            } else { garbageDist = Infinity }
             if (!recycleDone) {
                 recycleDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.RECYCLE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.RECYCLE.y);
-            } else {recycleDist = Infinity}
+            } else { recycleDist = Infinity }
             let min = Math.min(organicsDist, garbageDist, recycleDist)
             if (!organicsDone && organicsDist === min) {
                 await this.goToBin("ORGANIC");
@@ -210,11 +210,11 @@ class Board{
     }
 
     async collectItems() {
-    // PLEASE NOTE
-    // PLEASE NOTE
-    // itemsLocated may change after every scan, may want array of known item
-    // PLEASE NOTE
-    // PLEASE NOTE
+        // PLEASE NOTE
+        // PLEASE NOTE
+        // itemsLocated may change after every scan, may want array of known item
+        // PLEASE NOTE
+        // PLEASE NOTE
         for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 if (item.coveredBy === undefined) {
@@ -232,14 +232,14 @@ class Board{
         this.response = await this.server.getInstance();
     }
 
-    updateBoard(response){
+    updateBoard(response) {
         this.response = response;
     }
 
-    createSections(){
+    createSections() {
         let rectangles = [];
-        for(let i =this.Y_MIN+2; i < this.Y_MAX+3; i += 3) {
-            for (let j = this.X_MIN+this.SCAN_RADIUS+1; j < this.X_MAX+2*this.SCAN_RADIUS+1;j+= 2*this.SCAN_RADIUS +1){
+        for (let i = this.Y_MIN + 2; i < this.Y_MAX + 3; i += 3) {
+            for (let j = this.X_MIN + this.SCAN_RADIUS + 1; j < this.X_MAX + 2 * this.SCAN_RADIUS + 1; j += 2 * this.SCAN_RADIUS + 1) {
                 let center = [];
                 if (i > this.Y_MAX) {
                     center[0] = this.Y_MAX;
@@ -247,107 +247,109 @@ class Board{
                 if (j > this.X_MAX) {
                     center[1] = this.X_MAX;
                 }
-                rectangles.push({center: {x: center[1], y: center[0]},
-                                 done: false});
+                rectangles.push({
+                    center: { x: center[1], y: center[0] },
+                    done: false
+                });
             }
         }
         this.rectangles = rectangles;
     }
 
     async move(destX, destY) {
-      // move north optimized for current direction
-      if (this.response.direction == "N") {
+        // move north optimized for current direction
+        if (this.response.direction == "N") {
+            if (this.response.location.y < destY) {
+                for (let i = 0; i < destY - this.response.location.y; i++) {
+                    await this.server.move();
+                }
+            }
+        }
+        // move east optimized for current direction
+        else if (this.response.direction == "E") {
+            if (this.response.location.x < destX) {
+                for (let i = 0; i < destX - this.this.response.location.x; i++) {
+                    await this.server.move();
+                }
+            }
+        }
+        // move west optimized for current direction
+        else if (this.response.direction == "W") {
+            if (this.response.location.x > destX) {
+                for (let i = 0; i < this.response.location.x - destX; i++) {
+                    await this.server.move();
+                }
+            }
+        }
+        // move south optimized for current direction
+        else if (this.response.direction == "S") {
+            if (this.response.location.y > destY) {
+                for (let i = 0; i < this.response.location.y - destY; i++) {
+                    await this.server.move();
+                }
+            }
+        }
+        // move North if still required
         if (this.response.location.y < destY) {
-          for (let i = 0; i < destY - this.response.location.y; i++) {
-            await this.server.move();
-          }
+            await this.server.turn('N');
+            for (let i = 0; i < destY - this.response.location.y; i++) {
+                await this.server.move();
+            }
         }
-      }
-      // move east optimized for current direction
-      else if (this.response.direction == "E") {
-        if (this.response.location.x < destX) {
-          for (let i = 0; i < destX - this.this.response.location.x; i++) {
-            await this.server.move();
-          }
-        }
-      }
-      // move west optimized for current direction
-      else if (this.response.direction == "W") {
-        if (this.response.location.x > destX) {
-          for (let i = 0; i < this.response.location.x - destX; i++) {
-            await this.server.move();
-          }
-        }
-      }
-      // move south optimized for current direction
-      else if (this.response.direction == "S") {
+        // move South if still required
         if (this.response.location.y > destY) {
-          for (let i = 0; i < this.response.location.y - destY; i++) {
-            await this.server.move();
-          }
+            await this.server.turn('S');
+            for (let i = 0; i < this.response.location.y - destY; i++) {
+                await this.server.move();
+            }
         }
-      }
-      // move North if still required
-      if (this.response.location.y < destY) {
-        await this.server.turn('N');
-        for (let i = 0; i < destY - this.response.location.y; i++) {
-          await this.server.move();
+        // move East if still required
+        if (this.response.location.x < destX) {
+            await this.server.turn('E');
+            for (let i = 0; i < destX - this.response.location.x; i++) {
+                await this.server.move();
+            }
         }
-      }
-      // move South if still required
-      if (this.response.location.y > destY) {
-        await this.server.turn('S');
-        for (let i = 0; i < this.response.location.y - destY; i++) {
-          await this.server.move();
+        // move West if still required
+        if (this.response.location.x > destX) {
+            await this.server.turn('W');
+            for (let i = 0; i < this.response.location.x - destX; i++) {
+                await this.server.move();
+            }
         }
-      }
-      // move East if still required
-      if (this.response.location.x < destX) {
-        await this.server.turn('E');
-        for (let i = 0; i < destX - this.response.location.x; i++) {
-          await this.server.move();
-        }
-      }
-      // move West if still required
-      if (this.response.location.x > destX) {
-        await this.server.turn('W');
-        for (let i = 0; i < this.response.location.x - destX; i++) {
-          await this.server.move();
-        }
-      }
 
-      // Update board state
-      this.response = await this.server.getInstance();
-	console.log("After move:");
-      console.log(this.response);
+        // Update board state
+        this.response = await this.server.getInstance();
+        console.log("After move:");
+        console.log(this.response);
     }
 
-    pickCorner(){
+    pickCorner() {
 
         let destY = 0;
         let destX = 0;
 
         //Top
-        if(this.response.location.y >= (this.constants.Y_MAX-this.constants.Y_MIN)/2){
-            for(let i =0; i < this.rectangles.length; i++){
+        if (this.response.location.y >= (this.constants.Y_MAX - this.constants.Y_MIN) / 2) {
+            for (let i = 0; i < this.rectangles.length; i++) {
                 destY = Math.max(destY, this.rectangles[i].center.y);
             }
-        //Bottom
+            //Bottom
         } else {
             destY = 2;
         }
 
         //Right
-        if(this.response.location.x >= (this.constants.X_MAX-this.constants.X_MIN)/2){
-            for(let i =0; i < this.rectangles.length; i++){
+        if (this.response.location.x >= (this.constants.X_MAX - this.constants.X_MIN) / 2) {
+            for (let i = 0; i < this.rectangles.length; i++) {
                 destY = Math.max(destX, this.rectangles[i].center.x);
             }
-        //Left
-        }else {
+            //Left
+        } else {
             destX = this.constants.SCAN_RADIUS + 1;
         }
 
-        this.move(destX,destY);
+        this.move(destX, destY);
 
     }
 
@@ -356,56 +358,56 @@ class Board{
      * Returns null if all rectangles done.
      */
     nextRect() {
-	let shortestDistance = null;
-	let x;
-	let y;
-	for (let i = 0; i < this.rectangles.length; i++) {
-	    let distance = Math.abs(this.response.location.x - this.rectangles[i].center.x) + Math.abs(this.response.location.y = this.rectangles[i].center.y);
-	    if (!this.rectangles[i].done && (shortestDistance === null || distance < shortestDistance)) {
-		shortestDistance = distance;
-		x = this.rectangles[i].center.x;
-		y = this.rectangles[i].center.y;
-	    }
-	}
-	if (shortestDistance === null) {
-	    return null;
-	}
-	   return {"x": x, "y": y};
+        let shortestDistance = null;
+        let x;
+        let y;
+        for (let i = 0; i < this.rectangles.length; i++) {
+            let distance = Math.abs(this.response.location.x - this.rectangles[i].center.x) + Math.abs(this.response.location.y = this.rectangles[i].center.y);
+            if (!this.rectangles[i].done && (shortestDistance === null || distance < shortestDistance)) {
+                shortestDistance = distance;
+                x = this.rectangles[i].center.x;
+                y = this.rectangles[i].center.y;
+            }
+        }
+        if (shortestDistance === null) {
+            return null;
+        }
+        return { "x": x, "y": y };
     }
 
 
     /**
      * Collects all items inside a rectangle.
      */
-    async collectRect(rectCenter){
-	while (true) {
-	    // Pickup all items in rect
-	    let shortestDistance = null;
-	    let x;
-	    let y;
-	    this.response.located.forEach((item) => {
-		let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y = item.y);
-		if (this.insideRect(rectCenter, item.x, item.y) && (shortestDistance === null || distance < shortestDistance)) {
-		    shortestDistance = distance;
-		    x = item.x;
-		    y = item.y;
-		}
-	    });
-	    if (shortestDistance != null) {
-		// All items in rectangle collected
-		return;
-	    }
-	    // Move to the closest item and collect all possible items there
-	    await this.move(x, y);
-	    await this.collectItems;
-	}
+    async collectRect(rectCenter) {
+        while (true) {
+            // Pickup all items in rect
+            let shortestDistance = null;
+            let x;
+            let y;
+            this.response.located.forEach((item) => {
+                let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y = item.y);
+                if (this.insideRect(rectCenter, item.x, item.y) && (shortestDistance === null || distance < shortestDistance)) {
+                    shortestDistance = distance;
+                    x = item.x;
+                    y = item.y;
+                }
+            });
+            if (shortestDistance != null) {
+                // All items in rectangle collected
+                return;
+            }
+            // Move to the closest item and collect all possible items there
+            await this.move(x, y);
+            await this.collectItems;
+        }
 
     }
 
     insideRect(rectCenter, x, y) {
-	return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
-	    && (x <= rectCenter.x + this.response.SCAN_RADIUS - 1)
-	    && (x >= rectCenter.x - this.response.SCAN_RADIUS + 1);
+        return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
+            && (x <= rectCenter.x + this.response.SCAN_RADIUS - 1)
+            && (x >= rectCenter.x - this.response.SCAN_RADIUS + 1);
     }
 
     /**
@@ -430,41 +432,41 @@ class Board{
         return true;
     }
 
-    shouldVisitBins(){
-        let destBin = {recycle: false, organic: false, garbage: false};
-        let organicHeld =0;
-        let garbageHeld =0;
+    shouldVisitBins() {
+        let destBin = { recycle: false, organic: false, garbage: false };
+        let organicHeld = 0;
+        let garbageHeld = 0;
         let recycleHeld = 0;
 
         let organicBin = 0;
-        let recycleBin =0;
-        let garbageBin =0;
+        let recycleBin = 0;
+        let garbageBin = 0;
 
-        for(const item of this.response.itemsHeld){
-            if(item.type == "ORGANIC"){
-                organicHeld ++;
-            }else if (item.type == "GARBAGE") {
-                garbageHeld ++;
+        for (const item of this.response.itemsHeld) {
+            if (item.type == "ORGANIC") {
+                organicHeld++;
+            } else if (item.type == "GARBAGE") {
+                garbageHeld++;
             } else if (item.type == "RECYCLE") {
-                recycleHeld ++;
+                recycleHeld++;
             }
         }
 
-        for(const item of this.response.itemBin){
-            if(item.type == "ORGANIC"){
-                organicBin ++;
-            }else if (item.type == "GARBAGE") {
-                garbageBin ++;
+        for (const item of this.response.itemBin) {
+            if (item.type == "ORGANIC") {
+                organicBin++;
+            } else if (item.type == "GARBAGE") {
+                garbageBin++;
             } else if (item.type == "RECYCLE") {
-                recycleBin ++;
+                recycleBin++;
             }
         }
 
-        if(organicHeld + organicBin >= this.response.constants.BIN_CAPACITY.ORGANIC && organicBin/this.response.constants.BIN_CAPACITY.ORGANIC < 0.75){
+        if (organicHeld + organicBin >= this.response.constants.BIN_CAPACITY.ORGANIC && organicBin / this.response.constants.BIN_CAPACITY.ORGANIC < 0.75) {
             destBin.organic = true;
-        } else if (garbageHeld + garbageBin >= this.response.constants.BIN_CAPACITY.GARBAGE && garbageBin/this.response.constants.BIN_CAPACITY.GARBAGE < 0.75) {
+        } else if (garbageHeld + garbageBin >= this.response.constants.BIN_CAPACITY.GARBAGE && garbageBin / this.response.constants.BIN_CAPACITY.GARBAGE < 0.75) {
             destBin.garbage = true;
-        }else if(recycleHeld + recycleBin  >= this.response.constants.BIN_CAPACITY.RECYCLE && recycleBin/this.response.constants.BIN_CAPACITY.RECYCLE < 0.75){
+        } else if (recycleHeld + recycleBin >= this.response.constants.BIN_CAPACITY.RECYCLE && recycleBin / this.response.constants.BIN_CAPACITY.RECYCLE < 0.75) {
             destBin.recycle = true;
         }
 
@@ -473,20 +475,20 @@ class Board{
 }
 
 
-async function main(){
+async function main() {
 
     const server = new Server();
     let response = await server.deleteInstance();
     let board;
 
     // Connect
-    try{
+    try {
         response = await server.init();
 
 
         // Board setup
         board = new Board(response, server);
-    } catch (err){
+    } catch (err) {
         console.log(err);
     }
 
