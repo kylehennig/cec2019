@@ -6,6 +6,7 @@ class Board{
     constructor(response, server){
 	this.setup(response, server);
 	this.enterLoop();
+    this.finalDropOff();
     }
 
     setup(response, server) {
