@@ -87,7 +87,7 @@ class Board{
                 }
             }
             let organicsDist = 0;
-            let recycleDist = 0;
+            let garbageDist = 0;
             let recycleDist = 0;
             if (!organicsDone) {
                 organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
