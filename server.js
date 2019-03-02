@@ -4,14 +4,16 @@ const url = 'http://cec2019.ca/';
 const token = 'alberta-77hXNVY9CfBT8jvzU5oNPHHn2EVFTbdUVP5CYzBUQ9Fmz5GbD2T8NqXh7b9nXwmQ';
 
 class Server {
-    queue = [];
+    constructor() {
+        this._queue = [];
+    }
 
     /**
      * Connects to the server.
      * @returns {Promise} A promise resolving to the payload object.
      */
     async init() {
-        setInterval(this._dispatch, 500);
+        setInterval(this._dispatch.bind(this), 500);
         return this.getInstance();
     }
 
@@ -21,7 +23,7 @@ class Server {
      */
     async getInstance() {
         return new Promise((resolve, reject) => {
-            this.queue.push(() => {
+            this._queue.push(() => {
                 this._post(url + '/instance')
                     .then(this._onResponse)
                     .then(payload => resolve(payload))
@@ -37,7 +39,7 @@ class Server {
      * Disconnects from the current instance.
      */
     finish() {
-        this.queue.push(() => {
+        this._queue.push(() => {
             this._post(url + '/finish')
                 .then(this._onResponse)
                 .catch(this._onError);
@@ -49,7 +51,7 @@ class Server {
      * @param {string} direction 
      */
     turn(direction) {
-        this.queue.push(() => {
+        this._queue.push(() => {
             if (!['N', 'E', 'S', 'W'].includes(direction)) {
                 console.log('Error: invalid direction.');
                 return;
@@ -64,7 +66,7 @@ class Server {
      * Moves one block forward.
      */
     move() {
-        this.queue.push(() => {
+        this._queue.push(() => {
             this._post(url + '/move')
                 .then(this._onResponse)
                 .catch(this._onError);
@@ -75,7 +77,7 @@ class Server {
      * Scans for nearby trash.
      */
     scanArea() {
-        this.queue.push(() => {
+        this._queue.push(() => {
             this._post(url + '/scanArea')
                 .then(this._onResponse)
                 .catch(this._onError);
@@ -87,7 +89,7 @@ class Server {
      * @param {number} id The item's id.
      */
     collectItem(id) {
-        this.queue.push(() => {
+        this._queue.push(() => {
             this._post(url + `/collectItem/${id}`)
                 .then(this._onResponse)
                 .catch(this._onError);
@@ -100,7 +102,7 @@ class Server {
      * @param {number} id The item's id.
      */
     unloadItem(id) {
-        this.queue.push(() => {
+        this._queue.push(() => {
             this._post(url + `/unloadItem/${id}`)
                 .then(this._onResponse)
                 .catch(this._onError);
@@ -139,8 +141,8 @@ class Server {
     }
 
     _dispatch() {
-        if (this.queue.length > 0) {
-            this.queue.pop()();
+        if (this._queue.length > 0) {
+            this._queue.pop()();
         }
     }
 }
