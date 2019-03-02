@@ -126,6 +126,7 @@ class Board{
             }
             this.response = await this.server.getInstance();
         }
+        console.log(this.response);
         await this.server.finish();
     }
 
