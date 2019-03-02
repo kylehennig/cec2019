@@ -215,17 +215,17 @@ class Board{
     // itemsLocated may change after every scan, may want array of known item
     // PLEASE NOTE
     // PLEASE NOTE
-        this.response.itemsLocated.forEach(async (item) => {
+        for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 if (item.coveredBy === undefined) {
                     await this.server.collectItem(item.id);
                 }
             }
-        });
+        }
         this.response = await this.server.getInstance();
-        for (let i = 0; i < this.response.itemsLocated.length; i++) {
+        for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
-                await collectItems();
+                await this.collectItems();
                 break;
             }
         }
