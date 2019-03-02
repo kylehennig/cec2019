@@ -474,26 +474,15 @@ class Board {
     }
 }
 
-
 async function main() {
-
-    const server = new Server();
-    let response = await server.deleteInstance();
-    let board;
-
-    // Connect
     try {
-        response = await server.init();
-
-
-        // Board setup
-        board = new Board(response, server);
+        const server = new Server();
+        await server.deleteInstance();
+        const response = await server.init();
+        new Board(response, server);
     } catch (err) {
         console.log(err);
     }
-
-    // Go to corner
-
 }
 
 main();
