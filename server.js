@@ -36,7 +36,15 @@ class Server {
     }
 
     /**
-     * Disconnects from the current instance.
+     * Deletes the current instance,
+     */
+    deleteInstance() {
+        this._queue = [];
+        this._delete(url + "/instance");
+    }
+
+    /**
+     * Finishes the current instance.
      */
     finish() {
         this._queue.push(() => {
@@ -119,6 +127,14 @@ class Server {
     _post(url) {
         return axios({
             method: 'post',
+            url: url,
+            headers: this._createHeaders()
+        });
+    }
+
+    _delete(url) {
+        return axios({
+            method: 'delete',
             url: url,
             headers: this._createHeaders()
         });
