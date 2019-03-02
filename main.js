@@ -94,7 +94,32 @@ console.log("Test3");
         let organicsDone = false;
         let garbageDone = false;
         let recycleDone = false;
+        let organicsWaiting = false;
+        let garbageWaiting = false;
+        let recycleWaiting = false;
         while (!organicsDone && !garbageDone && !recycleDone) {
+            this.response = await this.server.getInstance();
+            let inBinOrganics = 0;
+            let inBinGarbage = 0;
+            let inBinRecycle = 0;
+            for (let i = 0; i < this.response.itemsBin.length; i++) {
+                if (this.response.itemsBin[i].type == "ORGANIC") {
+                    inBinOrganics++;
+                } else if (this.response.itemsBin[i].type == "GARBAGE") {
+                    inBinGarbage = false;
+                } else if (this.response.itemsBin[i].type == "RECYCLE") {
+                    inBinRecycle = false;
+                }
+            }
+            if (inBinOrganics === this.response.BIN_CAPACITY.ORGANICS) {
+                organicsWaiting = true;
+            }
+            if (inBinGarbage === this.response.BIN_CAPACITY.GARBAGE) {
+                garbageWaiting = true;
+            }
+            if (inBinRecycle === this.response.BIN_CAPACITY.RECYCLE) {
+                recycleWaiting = true;
+            }
             organicsDone = true;
             garbageDone = true;
             recycleDone = true;
@@ -110,25 +135,27 @@ console.log("Test3");
             let organicsDist = 0;
             let garbageDist = 0;
             let recycleDist = 0;
-            if (!organicsDone) {
+            if (!organicsDone && !organicsWaiting) {
                 organicsDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.ORGANIC.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.ORGANIC.y);
             } else { organicsDist = Infinity }
-            if (!garbageDone) {
+            if (!garbageDone && !garbageWaiting) {
                 garbageDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.GARBAGE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.GARBAGE.y);
             } else { garbageDist = Infinity }
-            if (!recycleDone) {
+            if (!recycleDone && !recycleWaiting) {
                 recycleDist = Math.abs(this.response.location.x - this.constants.BIN_LOCATION.RECYCLE.x) + Math.abs(this.response.location.y - this.constants.BIN_LOCATION.RECYCLE.y);
             } else { recycleDist = Infinity }
             let min = Math.min(organicsDist, garbageDist, recycleDist)
-            if (!organicsDone && organicsDist === min) {
+            if (!organicsDone && organicsDist === min && !organicsWaiting) {
                 await this.goToBin("ORGANIC");
                 organicsDone = true;
-            } else if (!garbageDone && garbageDist === min) {
+            } else if (!garbageDone && garbageDist === min && !garbageWaiting) {
                 await this.goToBin("GARBAGE");
                 garbageDone = true;
-            } else if (!recycleDone && recycleDist === min) {
+            } else if (!recycleDone && recycleDist === min && !recycleWaiting) {
                 await this.goToBin("RECYCLE");
                 recycleDone = true;
+            } else {
+                await this.scanArea();
             }
             this.response = await this.server.getInstance();
         }
@@ -170,6 +197,7 @@ console.log("Test3");
                 if (this.response.itemsHeld[i].type == "ORGANIC") {
                     binOrganics++;
                     await this.server.unloadItem(this.response.itemsHeld[i].id);
+                    this.response = await this.server.getInstance();
                 }
             }
             this.response = await this.server.getInstance();
@@ -187,6 +215,7 @@ console.log("Test3");
                 if (this.response.itemsHeld[i].type == "ORGANIC") {
                     binGarbage++;
                     await this.server.unloadItem(this.response.itemsHeld[i].id);
+                    this.response = await this.server.getInstance();
                 }
             }
             this.response = await this.server.getInstance();
@@ -203,6 +232,7 @@ console.log("Test3");
                 if (this.response.itemsHeld[i].type == "RECYCLE") {
                     binRecycle++;
                     await this.server.unloadItem(this.response.itemsHeld[i].id);
+                    this.response = await this.server.getInstance();
                 }
             }
             this.response = await this.server.getInstance();
@@ -212,6 +242,7 @@ console.log("Test3");
             //     }
             // });
         }
+        this.response = await this.server.getInstance();
     }
 
     async collectItems() {
