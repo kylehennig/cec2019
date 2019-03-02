@@ -16,7 +16,7 @@ class Server {
         setInterval(this._dispatch.bind(this), 500);
         return new Promise((resolve, reject) => {
             this._queue.push(() => {
-                this._post(url + '/instance')
+                this._post(url + 'instance')
                     .then(this._onResponse)
                     .then(payload => resolve(payload))
                     .catch(error => {
@@ -34,7 +34,7 @@ class Server {
     async getInstance() {
         return new Promise((resolve, reject) => {
             this._queue.push(() => {
-                this._get(url + '/instance')
+                this._get(url + 'instance')
                     .then(this._onResponse)
                     .then(payload => resolve(payload))
                     .catch(error => {
@@ -50,7 +50,7 @@ class Server {
      */
     deleteInstance() {
         this._queue = [];
-        this._delete(url + "/instance");
+        this._delete(url + "instance");
     }
 
     /**
@@ -58,7 +58,7 @@ class Server {
      */
     finish() {
         this._queue.push(() => {
-            this._post(url + '/finish')
+            this._post(url + 'finish')
                 .then(this._onResponse)
                 .catch(this._onError);
         });
@@ -74,7 +74,7 @@ class Server {
                 console.log('Error: invalid direction.');
                 return;
             }
-            this._post(url + `/turn/${direction}`)
+            this._post(url + `turn/${direction}`)
                 .then(this._onResponse)
                 .catch(this._onError);
         });
@@ -85,7 +85,7 @@ class Server {
      */
     move() {
         this._queue.push(() => {
-            this._post(url + '/move')
+            this._post(url + 'move')
                 .then(this._onResponse)
                 .catch(this._onError);
         });
@@ -96,7 +96,7 @@ class Server {
      */
     scanArea() {
         this._queue.push(() => {
-            this._post(url + '/scanArea')
+            this._post(url + 'scanArea')
                 .then(this._onResponse)
                 .catch(this._onError);
         });
@@ -108,7 +108,7 @@ class Server {
      */
     collectItem(id) {
         this._queue.push(() => {
-            this._post(url + `/collectItem/${id}`)
+            this._post(url + `collectItem/${id}`)
                 .then(this._onResponse)
                 .catch(this._onError);
         });
@@ -121,7 +121,7 @@ class Server {
      */
     unloadItem(id) {
         this._queue.push(() => {
-            this._post(url + `/unloadItem/${id}`)
+            this._post(url + `unloadItem/${id}`)
                 .then(this._onResponse)
                 .catch(this._onError);
         });
