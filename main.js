@@ -1,8 +1,6 @@
 import Server from './server';
 
-
 class Board {
-
     constructor(response, server) {
         this.setup(response, server).then(this.enterLoop());
         //this.enterLoop();
@@ -30,7 +28,6 @@ class Board {
 
         this.createSections();
         this.pickCorner();
-
     }
 
     async enterLoop() {
@@ -240,17 +237,17 @@ class Board {
 
     createSections() {
         let rectangles = [];
-        for (let i = this.Y_MIN + 2; i < this.Y_MAX + 3; i += 3) {
-            for (let j = this.X_MIN + this.SCAN_RADIUS + 1; j < this.X_MAX + 2 * this.SCAN_RADIUS + 1; j += 2 * this.SCAN_RADIUS + 1) {
-                let center = [];
-                if (i > this.Y_MAX) {
-                    center[0] = this.Y_MAX;
-                }
-                if (j > this.X_MAX) {
-                    center[1] = this.X_MAX;
-                }
+        const X_MIN = this.constants.X_MIN;
+        const X_MAX = this.constants.X_MAX;
+        const Y_MIN = this.constants.Y_MIN;
+        const Y_MAX = this.constants.Y_MAX;
+        const SCAN_RADIUS = this.constants.SCAN_RADIUS;
+        for (let i = Y_MIN + 1; i < Y_MAX + 3; i += 3) {
+            for (let j = X_MIN + SCAN_RADIUS; j < X_MAX + 2 * SCAN_RADIUS + 1; j += 2 * SCAN_RADIUS + 1) {
+                const x = Math.min(j, X_MAX);
+                const y = Math.min(i, Y_MAX);
                 rectangles.push({
-                    center: { x: center[1], y: center[0] },
+                    center: { x: x, y: y },
                     done: false
                 });
             }
