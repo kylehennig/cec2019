@@ -321,11 +321,27 @@ class Board{
 	    && (x >= rectCenter.x - this.response.SCAN_RADIUS);
     }
 
-    checkClear(){
-        // Check if a rectanlge has had all items picked up
-
+    /**
+     * Checks if the current rectangle has no more items remaining.
+     * @returns True if clear, false otherwise.
+     */
+    checkClear() {
+        const x = this.response.location.x;
+        const y = this.response.location.y;
+        const height = 3;
+        const width = 2 * this.response.constants.SCAN_RADIUS - 1;
+        const dimensions = this.response.constants.ROOM_DIMENSIONS;
+        const minX = Math.max(x - Math.floor(height / 2), dimensions.X_MIN);
+        const maxX = Math.min(x + Math.floor(height / 2), dimensions.X_MAX);
+        const minY = Math.max(y - Math.floor(width / 2), dimensions.Y_MIN);
+        const maxY = Math.min(y + Math.floor(width / 2), dimensions.Y_MAX);
+        for (const item of this.response.itemsLocated) {
+            if (item.x >= minX && item.x <= maxX && item.y >= minY && item.y <= maxY) {
+                return false;
+            }
+        }
+        return true;
     }
-
 }
 
 
