@@ -49,7 +49,7 @@ class Board{
 
             while(!rectClear){
                 // Pick up all items
-                this.collectRect();
+                await this.collectRect(dest);
 
 
                 //Move back to center
@@ -255,8 +255,38 @@ class Board{
     }
 
 
-    collectRect(){
-        // Pickup all items in rect
+    /**
+     * Collects all items inside a rectangle.
+     */
+    async collectRect(rectCenter){
+	while (true) {
+	    // Pickup all items in rect
+	    let shortestDistance = null;
+	    let x;
+	    let y;
+	    this.response.located.forEach((item) => {
+		let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y = item.y);
+		if (this.insideRect(rectCenter, item.x, item.y) && (shortestDistance === null || distance < shortestDistance)) {
+		    shortestDistance = distance;
+		    x = item.x;
+		    y = item.y;
+		}
+	    });
+	    if (shortestDistance != null) {
+		// All items in rectangle collected
+		return;
+	    }
+	    // Move to the closest item and collect all possible items there
+	    await this.move(x, y);
+	    await this.collectItems;
+	}
+
+    }
+
+    insideRect(rectCenter, x, y) {
+	return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
+	    && (x <= rectCenter.x + this.response.SCAN_RADIUS)
+	    && (x >= rectCenter.x - this.response.SCAN_RADIUS);
     }
 
     checkClear(){
