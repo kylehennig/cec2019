@@ -3,8 +3,9 @@ import Server from './server';
 
 class Board{
 
-    constructor(response){
+    constructor(response, server){
         this.constants = response.constants;
+        this.server = server;
 
         this.binOrganicContents =0;
         this.binRecycleContents = 0;
@@ -72,29 +73,29 @@ class Board{
       }
       // move North if still required
       if (this.response.location.y < destY) {
-        await this.server.rotate('N');
+        await this.server.turn('N');
         for (let i = 0; i < destY - this.response.location.y; i++) {
           await this.server.move();
         }
       }
       // move South if still required
       if (this.response.location.y > destY) {
-        await this.server.rotate('S');
+        await this.server.turn('S');
         for (let i = 0; i < this.response.location.y - destY; i++) {
           await this.server.move();
         }
       }
       // move East if still required
-      if (this.response.location.x < destx) {
-        await this.server.rotate('E');
-        for (let i = 0; i < destx - this.response.location.x; i++) {
+      if (this.response.location.x < destX) {
+        await this.server.turn('E');
+        for (let i = 0; i < destX - this.response.location.x; i++) {
           await this.server.move();
         }
       }
       // move West if still required
-      if (this.response.location.x > destx) {
-        await this.server.rotate('W');
-        for (let i = 0; i < this.response.location.x - destx; i++) {
+      if (this.response.location.x > destX) {
+        await this.server.turn('W');
+        for (let i = 0; i < this.response.location.x - destX; i++) {
           await this.server.move();
         }
       }
