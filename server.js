@@ -1,6 +1,7 @@
 import { axios } from 'axios';
 
-const url = 'http://cec2019.ca/'
+const url = 'http://cec2019.ca/';
+const token = 'alberta-77hXNVY9CfBT8jvzU5oNPHHn2EVFTbdUVP5CYzBUQ9Fmz5GbD2T8NqXh7b9nXwmQ';
 
 class Server {
     /**
@@ -16,7 +17,7 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     getInstance() {
-        return axios.post(url + '/instance')
+        return axios.post(url + '/instance', { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
     }
@@ -25,7 +26,7 @@ class Server {
      * Disconnects from the current instance.
      */
     finish() {
-        axios.post(url + '/finish')
+        axios.post(url + '/finish', { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
     }
@@ -39,7 +40,7 @@ class Server {
             console.log('Error: invalid direction.');
             return;
         }
-        axios.post(url + `/finish/${direction}`)
+        axios.post(url + `/finish/${direction}`, { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
     }
@@ -48,7 +49,7 @@ class Server {
      * Moves one block forward.
      */
     move() {
-        axios.post(url + '/move')
+        axios.post(url + '/move', { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
     }
@@ -57,7 +58,7 @@ class Server {
      * Scans for nearby trash.
      */
     scanArea() {
-        axios.post(url + '/scanArea')
+        axios.post(url + '/scanArea', { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
     }
@@ -67,7 +68,7 @@ class Server {
      * @param {number} id The item's id.
      */
     collectItem(id) {
-        axios.post(url + `/collectItem/${id}`)
+        axios.post(url + `/collectItem/${id}`, { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
     }
@@ -78,9 +79,16 @@ class Server {
      * @param {number} id The item's id.
      */
     unloadItem(id) {
-        axios.post(url + `/unloadItem/${id}`)
+        axios.post(url + `/unloadItem/${id}`, { headers: _createHeaders() })
             .then(_onResponse)
             .catch(_onError);
+    }
+
+    _createHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'token': apiKey
+        };
     }
 
     _onResponse(response) {
