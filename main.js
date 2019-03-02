@@ -65,6 +65,28 @@ class Board{
         //Bottom
 
     }
+
+    /**
+     * Returns x, y of next rectangle center to go to.
+     * Returns null if all rectangles done.
+     */
+    nextRect() {
+	let shortestDistance = null;
+	let x;
+	let y;
+	for (let i = 0; i < this.rectangles.length; i++) {
+	    let distance = Math.abs(this.response.location.x - this.rectangles[i].center.x) + Math.abs(this.response.location.y = this.rectangles[i].center.y);
+	    if (!this.rectangles[i].done && (shortestDistance === null || distance < shortestDistance)) {
+		shortestDistance = distance;
+		x = this.rectangles[i].center.x;
+		y = this.rectangles[i].center.y;
+	    }
+	}
+	if (shortestDistance === null) {
+	    return null;
+	}
+	return {"x": x, "y": y};
+    }
 }
 
 
