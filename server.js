@@ -108,4 +108,4 @@ class Server {
     }
 }
 
-exports.Server = Server;
+export default Server;
