@@ -4,9 +4,8 @@ import Server from './server';
 class Board{
 
     constructor(response, server){
-	this.setup(response, server);
-	this.enterLoop();
-    this.finalDropOff();
+	       this.setup(response, server);
+         this.enterLoop();
     }
 
     setup(response, server) {
@@ -31,6 +30,7 @@ class Board{
 
         this.createSections();
         this.pickCorner();
+
     }
 
     async enterLoop() {
@@ -82,6 +82,7 @@ class Board{
             }
 
         }
+        await this.finalDropOff();
     }
 
     async finalDropOff() {
