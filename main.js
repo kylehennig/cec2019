@@ -25,10 +25,6 @@ class Board {
         this.depositedGarbage = 0;
 
         this.totalPickup = this.constants.TOTAL_COUNT.ORGANIC + this.constants.TOTAL_COUNT.RECYCLE + this.constants.TOTAL_COUNT.GARBAGE;
-        console.log("HELLLLLOOOOOOOOO");
-        console.log(this.response);
-        await this.move(10, 10);
-        console.log(this.response);
 
         this.createSections();
         await this.pickCorner();
