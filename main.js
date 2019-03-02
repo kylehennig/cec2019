@@ -3,13 +3,20 @@ import Server from './server';
 
 class Board{
 
-    constructor(constants){
-        this.constants = constants;
+    constructor(response){
+        this.constants = response.constants;
 
         this.binOrganicContents =0;
         this.binRecycleContents = 0;
         this.binTrashContents =0;
-        board.createSections();
+
+        this.updateBoard(response);
+        this.createSections();
+        this.pickCorner();
+    }
+
+    updateBoard(response){
+        this.response = response;
     }
 
     createSections(){
@@ -29,30 +36,58 @@ class Board{
         }
         this.rectangles = rectangles;
     }
+
+    pickCorner(){
+        let top = false;
+        let right= false;
+        let destY = 2;
+        let destX = this.constants.SCAN_RADIUS + 1;
+
+        //IMPLEMENT CLOSEST CORNER
+        // if(this.response.location.y >= (this.constants.Y_MAX-this.constants.Y_MIN)/2){
+        //     top = true;
+        // }
+        // if(this.response.location.x >= (this.constants.X_MAX-this.constants.X_MIN)/2){
+        //     right = true;
+        // }
+
+        // if(right && top){
+        //
+        // }else if (!right && top) {
+        //
+        // }else if (right && !top) {
+        //
+        // } else{
+        //      destY = 2;
+        //      destX = this.constants.SCAN_RADIUS + 1;
+        // }
+
+        //Bottom
+
+    }
 }
 
 
 async function main(){
 
     const server = new Server();
+    let board;
+
     // Connect
     try{
         let response = await server.init();
-        let board;
 
-        if (response.Response.type === "FAILURE"){
+        if (response.type === "FAILURE"){
             console.log("Failed Init");
         }else {
             console.log("Init Success")
 
-            // Board Setup
-            board = new Board(response.constants);
+            // Board setup
+            board = new Board(response);
         }
     } catch (err){
         console.log(err);
     }
-
-
 
     // Go to corner
 
