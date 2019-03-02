@@ -37,19 +37,20 @@ class Board {
             let binStatus = this.shouldVisitBins();
 
             if (binStatus.garbage) {
-                this.goToBin("GARBAGE");
+                await this.goToBin("GARBAGE");
             }
             if (binStatus.recycle) {
-                this.goToBin("RECYCLE");
+                await this.goToBin("RECYCLE");
 
             }
             if (binStatus.organic) {
-                this.goToBin("ORGANIC");
+                await this.goToBin("ORGANIC");
             }
 
             // Next Rect to search
             let dest = this.nextRect();
             if (dest === null) {
+                console.log("dest rect is NUll");
                 this.response = await this.server.getInstance();
                 break;
             }
@@ -348,6 +349,7 @@ class Board {
         }
 
         await this.move(destX, destY);
+        this.response = await this.server.getInstance();
 
     }
 
@@ -394,18 +396,17 @@ class Board {
                     y = item.y;
                 }
             });
-            if (shortestDistance != null) {
+            if (shortestDistance === null) {
                 // All items in rectangle collected
                 return;
-
+            }
             // Move to the closest item and collect all possible items there
             await this.move(x, y);
-            await this.collectItems();s
+            await this.collectItems();
             this.response = await server.getInstance();
         }
 
     }
-}
 
     insideRect(rectCenter, x, y) {
         return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
