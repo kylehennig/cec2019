@@ -74,9 +74,9 @@ class Board{
         let garbageDone = false;
         let recycleDone = false;
         while (!organicsDone && !garbageDone && !recycleDone) {
-            let organicsDone = true;
-            let garbageDone = true;
-            let recycleDone = true;
+            organicsDone = true;
+            garbageDone = true;
+            recycleDone = true;
             for (let i = 0; i < this.response.itemsHeld.size(); i++) {
                 if (this.response.itemsHeld[i].type == "ORGANIC") {
                     organicsDone = false;
