@@ -50,6 +50,7 @@ class Board {
             }
 
             // Next Rect to search
+            console.log("SHould be at the next one");
             let dest = this.nextRect();
             console.log(dest);
             if (dest === null) {
@@ -228,7 +229,7 @@ console.log("Test3");
         // PLEASE NOTE
         for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
-                if (item.coveredBy === undefined) {
+                if (item.coveredBy === undefined || this.isHeld(item.coveredBy)) {
                     console.log("ITEM COLLECT");
                     await this.server.collectItem(item.id);
                 }
@@ -243,6 +244,15 @@ console.log("Test3");
             }
         }
         this.response = await this.server.getInstance();
+    }
+
+    isHeld(id) {
+        for (const item of this.response.itemsHeld) {
+            if (item.id == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     updateBoard(response) {
@@ -411,7 +421,7 @@ console.log("Test3");
             let y;
             this.response.itemsLocated.forEach((item) => {
                 let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y - item.y);
-                if (this.insideRect(rectCenter, item.x, item.y) && (shortestDistance === null || distance < shortestDistance)) {
+                if ((shortestDistance === null || distance < shortestDistance)) {
                     shortestDistance = distance;
                     x = item.x;
                     y = item.y;
