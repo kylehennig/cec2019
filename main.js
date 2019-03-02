@@ -27,7 +27,7 @@ class Board {
         this.totalPickup = this.constants.TOTAL_COUNT.ORGANIC + this.constants.TOTAL_COUNT.RECYCLE + this.constants.TOTAL_COUNT.GARBAGE;
 
         this.createSections();
-        this.pickCorner();
+        await this.pickCorner();
     }
 
     async enterLoop() {
@@ -49,11 +49,10 @@ class Board {
 
             // Next Rect to search
             let dest = this.nextRect();
-            // if (dest === null) {
-            //     await this.finalDropOff();
-            //     this.response = await this.server.getInstance();
-            //     break;
-            // }
+            if (dest === null) {
+                this.response = await this.server.getInstance();
+                break;
+            }
             let rectClear = false;
             await this.move(dest.x, dest.y);
 
@@ -323,32 +322,32 @@ class Board {
         console.log(this.response);
     }
 
-    pickCorner() {
+    async pickCorner() {
 
         let destY = 0;
         let destX = 0;
 
         //Top
-        if (this.response.location.y >= (this.constants.Y_MAX - this.constants.Y_MIN) / 2) {
+        if (this.response.location.y >= (this.constants.ROOM_DIMENSIONS.Y_MAX - this.constants.ROOM_DIMENSIONS.Y_MIN) / 2) {
             for (let i = 0; i < this.rectangles.length; i++) {
                 destY = Math.max(destY, this.rectangles[i].center.y);
             }
             //Bottom
         } else {
-            destY = 2;
+            destY = this.constants.ROOM_DIMENSIONS.Y_MIN +1;
         }
 
         //Right
-        if (this.response.location.x >= (this.constants.X_MAX - this.constants.X_MIN) / 2) {
+        if (this.response.location.x >= (this.constants.ROOM_DIMENSIONS.X_MAX - this.constants.ROOM_DIMENSIONS.X_MIN) / 2) {
             for (let i = 0; i < this.rectangles.length; i++) {
-                destY = Math.max(destX, this.rectangles[i].center.x);
+                destX = Math.max(destX, this.rectangles[i].center.x);
             }
             //Left
         } else {
-            destX = this.constants.SCAN_RADIUS + 1;
+            destX = this.constants.ROOM_DIMENSIONS.X_MIN + this.constants.SCAN_RADIUS;
         }
 
-        this.move(destX, destY);
+        await this.move(destX, destY);
 
     }
 
@@ -380,11 +379,14 @@ class Board {
      */
     async collectRect(rectCenter) {
         while (true) {
+            if (this.response.itemsLocated.length === 0) {
+                return;
+            }
             // Pickup all items in rect
             let shortestDistance = null;
             let x;
             let y;
-            this.response.located.forEach((item) => {
+            this.response.itemsLocated.forEach((item) => {
                 let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y = item.y);
                 if (this.insideRect(rectCenter, item.x, item.y) && (shortestDistance === null || distance < shortestDistance)) {
                     shortestDistance = distance;
@@ -395,13 +397,15 @@ class Board {
             if (shortestDistance != null) {
                 // All items in rectangle collected
                 return;
-            }
+
             // Move to the closest item and collect all possible items there
             await this.move(x, y);
-            await this.collectItems;
+            await this.collectItems();s
+            this.response = await server.getInstance();
         }
 
     }
+}
 
     insideRect(rectCenter, x, y) {
         return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
