@@ -64,7 +64,17 @@ class Board{
         }
     }
 
-    unloadItems() {
+    async goToBin(type) {
+        if (type == "ORGANIC") {
+            await this.move(this.constants.BIN_LOCATION.ORGANIC.x, this.constants.BIN_LOCATION.ORGANIC.y);
+        } else if (type == "RECYCLE") {
+            await this.move(this.constants.BIN_LOCATION.RECYCLE.x, this.constants.BIN_LOCATION.RECYCLE.y);
+        } else if (type == "GARBAGE") {
+            await this.move(this.constants.BIN_LOCATION.GARBAGE.x, this.constants.BIN_LOCATION.GARBAGE.y);
+        }
+    }
+
+    async unloadItems() {
         if (this.constants.BIN_LOCATION.ORGANIC.x == this.response.location.x && this.constants.BIN_LOCATION.ORGANIC.y == this.response.location.y) {
             this.response.itemsHeld.forEach(function(item) {
                 if (item.type == "ORGANIC") {
@@ -78,7 +88,7 @@ class Board{
                     await this.server.unloadItem(item.id);
                 }
             });
-        } else {
+        } else if (this.constants.BIN_LOCATION.RECYCLE.x == this.response.location.x && this.constants.BIN_LOCATION.RECYCLE.y == this.response.location.y) {
             this.response.itemsHeld.forEach(function(item) {
                 if (item.type == "RECYCLE") {
                     await this.server.unloadItem(item.id);
@@ -87,7 +97,7 @@ class Board{
         }
     }
 
-    collectItems() {
+    async collectItems() {
     // PLEASE NOTE
     // PLEASE NOTE
     // itemsLocated may change after every scan, may want array of known item
