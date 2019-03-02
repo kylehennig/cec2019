@@ -2,7 +2,7 @@ import Server from './server';
 
 class Board {
     constructor(response, server) {
-        this.setup(response, server).then(this.enterLoop());
+        this.setup(response, server).then(this.enterLoop);
         //this.enterLoop();
     }
 
@@ -25,12 +25,17 @@ class Board {
         this.depositedGarbage = 0;
 
         this.totalPickup = this.constants.TOTAL_COUNT.ORGANIC + this.constants.TOTAL_COUNT.RECYCLE + this.constants.TOTAL_COUNT.GARBAGE;
+        console.log("HELLLLLOOOOOOOOO");
+        console.log(this.response);
+        await this.move(10, 10);
+        console.log(this.response);
 
         this.createSections();
         await this.pickCorner();
     }
 
     async enterLoop() {
+
         // Search and Pickup
         while ((this.response.itemsCollected.length + this.response.itemsHeld.length + this.response.itemsBin.length) < this.totalPickup) {
 
@@ -49,6 +54,7 @@ class Board {
 
             // Next Rect to search
             let dest = this.nextRect();
+            console.log(dest);
             if (dest === null) {
                 console.log("dest rect is NUll");
                 this.response = await this.server.getInstance();
@@ -267,7 +273,7 @@ class Board {
         // move east optimized for current direction
         else if (this.response.direction == "E") {
             if (this.response.location.x < destX) {
-                for (let i = 0; i < destX - this.this.response.location.x; i++) {
+                for (let i = 0; i < destX - this.response.location.x; i++) {
                     await this.server.move();
                 }
             }
@@ -288,6 +294,7 @@ class Board {
                 }
             }
         }
+        this.response = await this.server.getInstance();
         // move North if still required
         if (this.response.location.y < destY) {
             await this.server.turn('N');
@@ -295,6 +302,7 @@ class Board {
                 await this.server.move();
             }
         }
+        this.response = await this.server.getInstance();
         // move South if still required
         if (this.response.location.y > destY) {
             await this.server.turn('S');
@@ -302,6 +310,7 @@ class Board {
                 await this.server.move();
             }
         }
+        this.response = await this.server.getInstance();
         // move East if still required
         if (this.response.location.x < destX) {
             await this.server.turn('E');
@@ -309,6 +318,7 @@ class Board {
                 await this.server.move();
             }
         }
+        this.response = await this.server.getInstance();
         // move West if still required
         if (this.response.location.x > destX) {
             await this.server.turn('W');
@@ -319,7 +329,7 @@ class Board {
 
         // Update board state
         this.response = await this.server.getInstance();
-        console.log("After move:");
+        console.log("AFTER MOVE:");
         console.log(this.response);
     }
 
@@ -403,7 +413,7 @@ class Board {
             // Move to the closest item and collect all possible items there
             await this.move(x, y);
             await this.collectItems();
-            this.response = await server.getInstance();
+            this.response = await this.server.getInstance();
         }
 
     }
