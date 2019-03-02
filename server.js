@@ -1,4 +1,4 @@
-import { axios } from 'axios';
+import axios from 'axios';
 
 const url = 'http://cec2019.ca/';
 const token = 'alberta-77hXNVY9CfBT8jvzU5oNPHHn2EVFTbdUVP5CYzBUQ9Fmz5GbD2T8NqXh7b9nXwmQ';
@@ -9,7 +9,7 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     async init() {
-        return getInstance();
+        return this.getInstance();
     }
 
     /**
@@ -17,18 +17,18 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     async getInstance() {
-        return axios.post(url + '/instance', { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        return axios.post(url + '/instance', { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     /**
      * Disconnects from the current instance.
      */
     finish() {
-        axios.post(url + '/finish', { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        axios.post(url + '/finish', { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     /**
@@ -40,27 +40,27 @@ class Server {
             console.log('Error: invalid direction.');
             return;
         }
-        axios.post(url + `/finish/${direction}`, { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        axios.post(url + `/finish/${direction}`, { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     /**
      * Moves one block forward.
      */
     move() {
-        axios.post(url + '/move', { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        axios.post(url + '/move', { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     /**
      * Scans for nearby trash.
      */
     scanArea() {
-        axios.post(url + '/scanArea', { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        axios.post(url + '/scanArea', { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     /**
@@ -68,9 +68,9 @@ class Server {
      * @param {number} id The item's id.
      */
     collectItem(id) {
-        axios.post(url + `/collectItem/${id}`, { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        axios.post(url + `/collectItem/${id}`, { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     /**
@@ -79,15 +79,15 @@ class Server {
      * @param {number} id The item's id.
      */
     unloadItem(id) {
-        axios.post(url + `/unloadItem/${id}`, { headers: _createHeaders() })
-            .then(_onResponse)
-            .catch(_onError);
+        axios.post(url + `/unloadItem/${id}`, { headers: this._createHeaders() })
+            .then(this._onResponse)
+            .catch(this._onError);
     }
 
     _createHeaders() {
         return {
             'Content-Type': 'application/json',
-            'token': apiKey
+            'token': token
         };
     }
 
