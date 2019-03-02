@@ -13,6 +13,7 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     async init() {
+        console.log("init");
         setInterval(this._dispatch.bind(this), 500);
         return new Promise(resolve => {
             this._queue.push(() => {
@@ -28,6 +29,7 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     async getInstance() {
+        console.log("getInstance");
         return new Promise(resolve => {
             this._queue.push(() => {
                 this._get(url + 'instance')
@@ -52,6 +54,7 @@ class Server {
      * Finishes the current instance.
      */
     async finish() {
+        console.log("finish");
         return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'finish')
@@ -66,6 +69,7 @@ class Server {
      * @param {string} direction 
      */
     async turn(direction) {
+        console.log("turn");
         if (!['N', 'E', 'S', 'W'].includes(direction)) {
             console.log('Error: invalid direction.');
             return;
@@ -83,6 +87,7 @@ class Server {
      * Moves one block forward.
      */
     async move() {
+        console.log("move");
         return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'move')
@@ -96,6 +101,7 @@ class Server {
      * Scans for nearby trash.
      */
     async scanArea() {
+        console.log("scanArea");
         return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'scanArea')
@@ -110,6 +116,7 @@ class Server {
      * @param {number} id The item's id.
      */
     async collectItem(id) {
+        console.log("collectItem");
         return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + `collectItem/${id}`)
@@ -125,6 +132,7 @@ class Server {
      * @param {number} id The item's id.
      */
     async unloadItem(id) {
+        console.log("unloadItem");
         return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + `unloadItem/${id}`)
@@ -183,6 +191,7 @@ class Server {
 
     _dispatch() {
         if (this._queue.length > 0) {
+            console.log("dispatch");
             this._queue.pop()();
         }
     }
