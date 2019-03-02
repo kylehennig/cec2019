@@ -125,25 +125,64 @@ class Board{
     }
 
     async unloadItems() {
+        let binOrganics = 0;
+        let binGarbage = 0;
+        let binRecycle = 0;
+        for (let i = 0; i < this.response.itemsBin.size(); i++) {
+            if (this.response.itemsBin[i].type === "ORGANIC") {
+                binOrganics++;
+            } else if (this.response.itemsBin[i].type === "GARBAGE") {
+                binGarbage++;
+            } else if (this.response.itemsBin[i].type === "RECYCLE") {
+                binRecycle++;
+            }
+        }
         if (this.constants.BIN_LOCATION.ORGANIC.x == this.response.location.x && this.constants.BIN_LOCATION.ORGANIC.y == this.response.location.y) {
-            this.response.itemsHeld.forEach(async (item) => {
-                if (item.type == "ORGANIC") {
-                    await this.server.unloadItem(item.id);
+            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+                if (binOrganics >= this.constants.BIN_CAPACITY.ORGANIC) {
+                    break;
                 }
-            });
+                if (this.response.itemsHeld[i].type == "ORGANIC") {
+                    binOrganics++;
+                    await this.server.unloadItem(this.response.itemsHeld[i].id);
+                }
+            }
+            // this.response.itemsHeld.forEach(async (item) => {
+            //     if (item.type == "ORGANIC") {
+            //         await this.server.unloadItem(item.id);
+            //     }
+            // });
         }
         else if (this.constants.BIN_LOCATION.GARBAGE.x == this.response.location.x && this.constants.BIN_LOCATION.GARBAGE.y == this.response.location.y) {
-            this.response.itemsHeld.forEach(async (item) => {
-                if (item.type == "GARBAGE") {
-                    await this.server.unloadItem(item.id);
+            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+                if (binGarbage >= this.constants.BIN_CAPACITY.GARBAGE) {
+                    break;
                 }
-            });
+                if (this.response.itemsHeld[i].type == "ORGANIC") {
+                    binGarbage++;
+                    await this.server.unloadItem(this.response.itemsHeld[i].id);
+                }
+            }
+            // this.response.itemsHeld.forEach(async (item) => {
+            //     if (item.type == "GARBAGE") {
+            //         await this.server.unloadItem(item.id);
+            //     }
+            // });
         } else if (this.constants.BIN_LOCATION.RECYCLE.x == this.response.location.x && this.constants.BIN_LOCATION.RECYCLE.y == this.response.location.y) {
-            this.response.itemsHeld.forEach(async (item) => {
-                if (item.type == "RECYCLE") {
-                    await this.server.unloadItem(item.id);
+            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+                if (binRecycle >= this.constants.BIN_CAPACITY.RECYCLE) {
+                    break;
                 }
-            });
+                if (this.response.itemsHeld[i].type == "RECYCLE") {
+                    binRecycle++;
+                    await this.server.unloadItem(this.response.itemsHeld[i].id);
+                }
+            }
+            // this.response.itemsHeld.forEach(async (item) => {
+            //     if (item.type == "RECYCLE") {
+            //         await this.server.unloadItem(item.id);
+            //     }
+            // });
         }
     }
 
