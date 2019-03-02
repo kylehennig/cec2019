@@ -40,14 +40,14 @@ class Board{
             let binStatus = this.shouldVisitBins();
 
             if(binStatus.garbage){
-                goToBin("GARBAGE");
+                this.goToBin("GARBAGE");
             }
             if(binStatus.recycle){
-                goToBin("RECYCLE");
+                this.goToBin("RECYCLE");
 
             }
             if(binStatus.organic){
-                goToBin("ORGANIC");
+                this.goToBin("ORGANIC");
             }
 
             // Next Rect to search
