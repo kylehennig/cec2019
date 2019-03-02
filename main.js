@@ -6,18 +6,53 @@ class Board{
     constructor(response, server){
         this.constants = response.constants;
         this.server = server;
+        this.response = response;
 
         this.binOrganicContents =0;
         this.binRecycleContents = 0;
-        this.binTrashContents =0;
-        this.totalBin = this.binOrganicContents + this.binRecycleContents + this.binTrashContents;
+        this.binGarbageContents =0;
 
-        this.updateBoard(response);
+        this.holdingOrganic = 0;
+        this.holdingRecycle = 0;
+        this.holdingGarbage = 0;
+
+        this.depositedOrganic = 0;
+        this.depositedRecycle = 0;
+        this.depositedGarbage = 0;
+
+        this.totalPickup = this.constants.TOTAL_COUNT.ORGANIC + this.constants.TOTAL_COUNT.RECYCLE + this.constants.TOTAL_COUNT.TRASH;
+
         this.createSections();
         this.pickCorner();
 
-        while(this.totalBin < GOAL){
-            
+        // Search and Pickup
+        while((this.depositedGarbage + this.depositedOrganic + this.depositedRecycle)< totalPickup){
+
+            // Next Rect to search
+            let dest = this.nextRect();
+            let rectClear false;
+            this.move(dest.x,dest.y);
+            this.response = await server.getInstance();
+
+            // Scan Rect
+            this.server.ScanArea;
+            this.response = await server.getInstance();
+
+            while(!rectClear){
+                // Pick up all items
+                this.collectRect();
+
+                //Move back to center
+                this.move(dest.x,dest.y);
+                this.response = await server.getInstance();
+
+                // Scan Rect to see if there was any overlap
+                this.server.ScanArea;
+                this.response = await server.getInstance();
+
+                rectClear = this.checkClear();
+            }
+
         }
     }
 
@@ -158,6 +193,15 @@ class Board{
 	   return {"x": x, "y": y};
     }
 
+
+    collectRect(){
+        // Pickup all items in rect
+    }
+
+    checkClear(){
+        // Check if a rectanlge has had all items picked up
+        
+    }
 
 }
 
