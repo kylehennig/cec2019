@@ -83,6 +83,11 @@ console.log("Test3");
 
                 rectClear = this.checkClear();
             }
+            for(let i = 0; i < this.rectangles.length; i++){
+                if((this.rectangles[i].center.x == dest.x)&&(this.rectangles[i].center.y == dest.y)){
+                    this.rectangles[i].done = true;
+                }
+            }
             console.log("Test4");
 
         }
@@ -246,6 +251,7 @@ console.log("Test3");
     }
 
     async collectItems() {
+        this.response = await this.server.getInstance();
         // PLEASE NOTE
         // PLEASE NOTE
         // itemsLocated may change after every scan, may want array of known item
@@ -254,6 +260,7 @@ console.log("Test3");
         for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 if (item.coveredBy === undefined) {
+                    console.log("ITEM COLLECT");
                     await this.server.collectItem(item.id);
                 }
             }
@@ -422,8 +429,10 @@ console.log("Test3");
      * Collects all items inside a rectangle.
      */
     async collectRect(rectCenter) {
+        console.log("CALL 1");
         while (true) {
             if (this.response.itemsLocated.length === 0) {
+                console.log("EXIT 1");
                 return;
             }
             // Pickup all items in rect
@@ -431,7 +440,7 @@ console.log("Test3");
             let x;
             let y;
             this.response.itemsLocated.forEach((item) => {
-                let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y = item.y);
+                let distance = Math.abs(this.response.location.x - item.x) + Math.abs(this.response.location.y - item.y);
                 if (this.insideRect(rectCenter, item.x, item.y) && (shortestDistance === null || distance < shortestDistance)) {
                     shortestDistance = distance;
                     x = item.x;
@@ -439,11 +448,13 @@ console.log("Test3");
                 }
             });
             if (shortestDistance === null) {
+                console.log("Exit 2");
                 // All items in rectangle collected
                 return;
             }
             // Move to the closest item and collect all possible items there
             await this.move(x, y);
+            console.log("I WANT TO COLLECT:");
             await this.collectItems();
             this.response = await this.server.getInstance();
         }
@@ -451,9 +462,9 @@ console.log("Test3");
     }
 
     insideRect(rectCenter, x, y) {
-        return (y <= rectCenter.y + 1) && (y <= rectCenter.y - 1)
-            && (x <= rectCenter.x + this.response.SCAN_RADIUS - 1)
-            && (x >= rectCenter.x - this.response.SCAN_RADIUS + 1);
+        return (y <= rectCenter.y + 1) && (y >= rectCenter.y - 1)
+            && (x <= rectCenter.x + this.response.constants.SCAN_RADIUS - 1)
+            && (x >= rectCenter.x - this.response.constants.SCAN_RADIUS + 1);
     }
 
     /**
