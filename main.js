@@ -64,6 +64,69 @@ class Board{
         }
     }
 
+    async move(destX, destY, response) {
+      // move north optimized for current direction
+      if (response.direction == "N") {
+        if (response.location.y < destY) {
+          for (let i = 0; i < destY - response.location.y; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move east optimized for current direction
+      else if (response.direction == "E") {
+        if (response.location.x < destX) {
+          for (let i = 0; i < destX - response.location.x; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move west optimized for current direction
+      else if (response.direction == "W") {
+        if (response.location.x > destX) {
+          for (let i = 0; i < response.location.x - destX; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move south optimized for current direction
+      else if (response.direction == "S") {
+        if (response.location.y > destY) {
+          for (let i = 0; i < response.location.y - destY; i++) {
+            await server.move();
+          }
+        }
+      }
+      // move North if still required
+      if (response.location.y < destY) {
+        await server.rotate('N');
+        for (let i = 0; i < destY - response.location.y; i++) {
+          await server.move();
+        }
+      }
+      // move South if still required
+      if (response.location.y > destY) {
+        await server.rotate('S');
+        for (let i = 0; i < response.location.y - destY; i++) {
+          await server.move();
+        }
+      }
+      // move East if still required
+      if (response.location.x < destx) {
+        await server.rotate('E');
+        for (let i = 0; i < destx - response.location.x; i++) {
+          await server.move();
+        }
+      }
+      // move West if still required
+      if (response.location.x > destx) {
+        await server.rotate('W');
+        for (let i = 0; i < response.location.x - destx; i++) {
+          await server.move();
+        }
+      }
+    }
+
     /**
      * Returns x, y of next rectangle center to go to.
      * Returns null if all rectangles done.
