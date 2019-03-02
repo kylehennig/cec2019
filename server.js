@@ -48,19 +48,27 @@ class Server {
     /**
      * Deletes the current instance,
      */
-    deleteInstance() {
+    async deleteInstance() {
         this._queue = [];
-        this._delete(url + "instance");
+        return new Promise((resolve, reject) => {
+            this._delete(url + "instance")
+                .then(resolve())
+                .catch(reject());
+        });
     }
 
     /**
      * Finishes the current instance.
      */
-    finish() {
-        this._queue.push(() => {
-            this._post(url + 'finish')
-                .then(this._onResponse)
-                .catch(this._onError);
+    async finish() {
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + 'finish')
+                    .then(this._onResponse)
+                    .then(resolve())
+                    .catch(this._onError)
+                    .catch(reject());
+            });
         });
     }
 
@@ -68,37 +76,49 @@ class Server {
      * Turns the robot to face the specified direction.
      * @param {string} direction 
      */
-    turn(direction) {
+    async turn(direction) {
         if (!['N', 'E', 'S', 'W'].includes(direction)) {
             console.log('Error: invalid direction.');
             return;
         }
-        this._queue.push(() => {
-            this._post(url + `turn/${direction}`)
-                .then(this._onResponse)
-                .catch(this._onError);
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + `turn/${direction}`)
+                    .then(this._onResponse)
+                    .then(resolve())
+                    .catch(this._onError)
+                    .catch(reject());
+            });
         });
     }
 
     /**
      * Moves one block forward.
      */
-    move() {
-        this._queue.push(() => {
-            this._post(url + 'move')
-                .then(this._onResponse)
-                .catch(this._onError);
+    async move() {
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + 'move')
+                    .then(this._onResponse)
+                    .then(resolve())
+                    .catch(this._onError)
+                    .catch(reject());
+            });
         });
     }
 
     /**
      * Scans for nearby trash.
      */
-    scanArea() {
-        this._queue.push(() => {
-            this._post(url + 'scanArea')
-                .then(this._onResponse)
-                .catch(this._onError);
+    async scanArea() {
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + 'scanArea')
+                    .then(this._onResponse)
+                    .then(resolve())
+                    .catch(this._onError)
+                    .catch(reject());
+            });
         });
     }
 
@@ -106,11 +126,15 @@ class Server {
      * Collects a previously scanned item.
      * @param {number} id The item's id.
      */
-    collectItem(id) {
-        this._queue.push(() => {
-            this._post(url + `collectItem/${id}`)
-                .then(this._onResponse)
-                .catch(this._onError);
+    async collectItem(id) {
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + `collectItem/${id}`)
+                    .then(this._onResponse)
+                    .then(resolve())
+                    .catch(this._onError)
+                    .then(reject());
+            });
         });
     }
 
@@ -119,11 +143,15 @@ class Server {
      * Requires the robot is at the proper disposal bin.
      * @param {number} id The item's id.
      */
-    unloadItem(id) {
-        this._queue.push(() => {
-            this._post(url + `unloadItem/${id}`)
-                .then(this._onResponse)
-                .catch(this._onError);
+    async unloadItem(id) {
+        return new Promise((resolve, reject) => {
+            this._queue.push(() => {
+                this._post(url + `unloadItem/${id}`)
+                    .then(this._onResponse)
+                    .then(resolve)
+                    .catch(this._onError)
+                    .catch(reject());
+            });
         });
     }
 
