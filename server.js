@@ -14,15 +14,11 @@ class Server {
      */
     async init() {
         setInterval(this._dispatch.bind(this), 500);
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'instance')
                     .then(this._onResponse)
-                    .then(payload => resolve(payload))
-                    .catch(error => {
-                        this._onError(error);
-                        reject();
-                    });
+                    .then(payload => resolve(payload));
             });
         });
     }
@@ -32,15 +28,11 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     async getInstance() {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._get(url + 'instance')
                     .then(this._onResponse)
-                    .then(payload => resolve(payload))
-                    .catch(error => {
-                        this._onError(error);
-                        reject();
-                    });
+                    .then(payload => resolve(payload));
             });
         });
     }
@@ -50,10 +42,9 @@ class Server {
      */
     async deleteInstance() {
         this._queue = [];
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._delete(url + "instance")
-                .then(resolve())
-                .catch(reject());
+                .then(() => resolve());
         });
     }
 
@@ -61,13 +52,11 @@ class Server {
      * Finishes the current instance.
      */
     async finish() {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'finish')
                     .then(this._onResponse)
-                    .then(resolve())
-                    .catch(this._onError)
-                    .catch(reject());
+                    .then(() => resolve());
             });
         });
     }
@@ -81,13 +70,11 @@ class Server {
             console.log('Error: invalid direction.');
             return;
         }
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + `turn/${direction}`)
                     .then(this._onResponse)
-                    .then(resolve())
-                    .catch(this._onError)
-                    .catch(reject());
+                    .then(() => resolve());
             });
         });
     }
@@ -96,13 +83,11 @@ class Server {
      * Moves one block forward.
      */
     async move() {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'move')
                     .then(this._onResponse)
-                    .then(resolve())
-                    .catch(this._onError)
-                    .catch(reject());
+                    .then(() => resolve());
             });
         });
     }
@@ -111,13 +96,11 @@ class Server {
      * Scans for nearby trash.
      */
     async scanArea() {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + 'scanArea')
                     .then(this._onResponse)
-                    .then(resolve())
-                    .catch(this._onError)
-                    .catch(reject());
+                    .then(() => resolve());
             });
         });
     }
@@ -127,13 +110,11 @@ class Server {
      * @param {number} id The item's id.
      */
     async collectItem(id) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + `collectItem/${id}`)
                     .then(this._onResponse)
-                    .then(resolve())
-                    .catch(this._onError)
-                    .then(reject());
+                    .then(() => resolve());
             });
         });
     }
@@ -144,13 +125,11 @@ class Server {
      * @param {number} id The item's id.
      */
     async unloadItem(id) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this._queue.push(() => {
                 this._post(url + `unloadItem/${id}`)
                     .then(this._onResponse)
-                    .then(resolve)
-                    .catch(this._onError)
-                    .catch(reject());
+                    .then(() => resolve());
             });
         });
     }
@@ -167,7 +146,7 @@ class Server {
             method: 'get',
             url: url,
             headers: this._createHeaders()
-        });
+        }).catch(this._onError);
     }
 
     _post(url) {
@@ -175,7 +154,7 @@ class Server {
             method: 'post',
             url: url,
             headers: this._createHeaders()
-        });
+        }).catch(this._onError);
     }
 
     _delete(url) {
@@ -183,7 +162,7 @@ class Server {
             method: 'delete',
             url: url,
             headers: this._createHeaders()
-        });
+        }).catch(this._onError);
     }
 
     _onResponse(response) {
