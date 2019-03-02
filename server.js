@@ -43,6 +43,7 @@ class Server {
      * Deletes the current instance,
      */
     async deleteInstance() {
+        console.log("deleteInstance");
         this._queue = [];
         return new Promise(resolve => {
             this._delete(url + "instance")
