@@ -237,10 +237,10 @@ class Board {
 
     createSections() {
         let rectangles = [];
-        const X_MIN = this.constants.X_MIN;
-        const X_MAX = this.constants.X_MAX;
-        const Y_MIN = this.constants.Y_MIN;
-        const Y_MAX = this.constants.Y_MAX;
+        const X_MIN = this.constants.ROOM_DIMENSIONS.X_MIN;
+        const X_MAX = this.constants.ROOM_DIMENSIONS.X_MAX;
+        const Y_MIN = this.constants.ROOM_DIMENSIONS.Y_MIN;
+        const Y_MAX = this.constants.ROOM_DIMENSIONS.Y_MAX;
         const SCAN_RADIUS = this.constants.SCAN_RADIUS;
         for (let i = Y_MIN + 1; i < Y_MAX + 3; i += 3) {
             for (let j = X_MIN + SCAN_RADIUS; j < X_MAX + 2 * SCAN_RADIUS + 1; j += 2 * SCAN_RADIUS + 1) {
