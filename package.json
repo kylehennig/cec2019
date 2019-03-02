@@ -1,0 +1,28 @@
+{
+  "name": "cec2019",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kylehennig/cec2019.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kylehennig/cec2019/issues"
+  },
+  "homepage": "https://github.com/kylehennig/cec2019#readme"
+}
