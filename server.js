@@ -5,16 +5,18 @@ const url = 'http://cec2019.ca/'
 class Server {
     /**
      * Connects to the server.
+     * @returns {Promise} A promise resolving to the payload object.
      */
     init() {
-        getInstance();
+        return getInstance();
     }
 
     /**
      * Gets the current instance.
+     * @returns {Promise} A promise resolving to the payload object.
      */
     getInstance() {
-        axios.post(url + '/instance')
+        return axios.post(url + '/instance')
             .then(_onResponse)
             .catch(_onError);
     }
@@ -83,11 +85,13 @@ class Server {
 
     _onResponse(response) {
         if (response.data.type === 'ERROR') {
-
+            console.log(response.data.error);
+            console.log(response.data.message);
         } else if (response.data.type === 'FAILURE') {
-
+            console.log(response.data.failure);
+            console.log(response.data.message);
         } else if (response.data.type === 'SUCCESS') {
-
+            return response.data.payload;
         }
     }
 
