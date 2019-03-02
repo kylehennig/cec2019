@@ -237,6 +237,7 @@ console.log("Test3");
         this.response = await this.server.getInstance();
         for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
+                console.log("reapppppeat");
                 await this.collectItems();
                 break;
             }
