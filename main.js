@@ -92,7 +92,7 @@ class Board{
             organicsDone = true;
             garbageDone = true;
             recycleDone = true;
-            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+            for (let i = 0; i < this.response.itemsHeld.length; i++) {
                 if (this.response.itemsHeld[i].type == "ORGANIC") {
                     organicsDone = false;
                 } else if (this.response.itemsHeld[i].type == "GARBAGE") {
@@ -146,7 +146,7 @@ class Board{
         let binOrganics = 0;
         let binGarbage = 0;
         let binRecycle = 0;
-        for (let i = 0; i < this.response.itemsBin.size(); i++) {
+        for (let i = 0; i < this.response.itemsBin.length; i++) {
             if (this.response.itemsBin[i].type === "ORGANIC") {
                 binOrganics++;
             } else if (this.response.itemsBin[i].type === "GARBAGE") {
@@ -156,7 +156,7 @@ class Board{
             }
         }
         if (this.constants.BIN_LOCATION.ORGANIC.x == this.response.location.x && this.constants.BIN_LOCATION.ORGANIC.y == this.response.location.y) {
-            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+            for (let i = 0; i < this.response.itemsHeld.length; i++) {
                 if (binOrganics >= this.constants.BIN_CAPACITY.ORGANIC) {
                     break;
                 }
@@ -173,7 +173,7 @@ class Board{
             // });
         }
         else if (this.constants.BIN_LOCATION.GARBAGE.x == this.response.location.x && this.constants.BIN_LOCATION.GARBAGE.y == this.response.location.y) {
-            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+            for (let i = 0; i < this.response.itemsHeld.length; i++) {
                 if (binGarbage >= this.constants.BIN_CAPACITY.GARBAGE) {
                     break;
                 }
@@ -189,7 +189,7 @@ class Board{
             //     }
             // });
         } else if (this.constants.BIN_LOCATION.RECYCLE.x == this.response.location.x && this.constants.BIN_LOCATION.RECYCLE.y == this.response.location.y) {
-            for (let i = 0; i < this.response.itemsHeld.size(); i++) {
+            for (let i = 0; i < this.response.itemsHeld.length; i++) {
                 if (binRecycle >= this.constants.BIN_CAPACITY.RECYCLE) {
                     break;
                 }
@@ -221,7 +221,7 @@ class Board{
             }
         });
         this.response = await this.server.getInstance();
-        for (let i = 0; i < this.response.itemsLocated.size(); i++) {
+        for (let i = 0; i < this.response.itemsLocated.length; i++) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 await collectItems();
                 break;
