@@ -40,30 +40,28 @@ class Board{
     pickCorner(){
         let top = false;
         let right= false;
-        let destY = 2;
-        let destX = this.constants.SCAN_RADIUS + 1;
+        let destY = 0;
+        let destX = 0;
 
-        //IMPLEMENT CLOSEST CORNER
-        // if(this.response.location.y >= (this.constants.Y_MAX-this.constants.Y_MIN)/2){
-        //     top = true;
-        // }
-        // if(this.response.location.x >= (this.constants.X_MAX-this.constants.X_MIN)/2){
-        //     right = true;
-        // }
-
-        // if(right && top){
-        //
-        // }else if (!right && top) {
-        //
-        // }else if (right && !top) {
-        //
-        // } else{
-        //      destY = 2;
-        //      destX = this.constants.SCAN_RADIUS + 1;
-        // }
-
+        //Top
+        if(this.response.location.y >= (this.constants.Y_MAX-this.constants.Y_MIN)/2){
+            for(let i =0; i < this.rectangles.length; i++){
+                destY = Math.max(destY, this.rectangles[i].center.y);
+            }
         //Bottom
+        } else {
+            destY = 2;
+        }
 
+        //Right
+        if(this.response.location.x >= (this.constants.X_MAX-this.constants.X_MIN)/2){
+            for(let i =0; i < this.rectangles.length; i++){
+                destY = Math.max(destX, this.rectangles[i].center.x);
+            }
+        //Left
+        }else {
+            destX = this.constants.SCAN_RADIUS + 1;
+        }
     }
 
     /**
