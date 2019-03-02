@@ -17,7 +17,7 @@ class Server {
      * @returns {Promise} A promise resolving to the payload object.
      */
     async getInstance() {
-        return axios.post(url + '/instance', { headers: this._createHeaders() })
+        return this._post(url + '/instance')
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -26,7 +26,7 @@ class Server {
      * Disconnects from the current instance.
      */
     finish() {
-        axios.post(url + '/finish', { headers: this._createHeaders() })
+        this._post(url + '/finish')
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -40,7 +40,7 @@ class Server {
             console.log('Error: invalid direction.');
             return;
         }
-        axios.post(url + `/finish/${direction}`, { headers: this._createHeaders() })
+        this._post(url + `/finish/${direction}`)
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -49,7 +49,7 @@ class Server {
      * Moves one block forward.
      */
     move() {
-        axios.post(url + '/move', { headers: this._createHeaders() })
+        this._post(url + '/move')
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -58,7 +58,7 @@ class Server {
      * Scans for nearby trash.
      */
     scanArea() {
-        axios.post(url + '/scanArea', { headers: this._createHeaders() })
+        this._post(url + '/scanArea')
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -68,7 +68,7 @@ class Server {
      * @param {number} id The item's id.
      */
     collectItem(id) {
-        axios.post(url + `/collectItem/${id}`, { headers: this._createHeaders() })
+        this._post(url + `/collectItem/${id}`)
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -79,7 +79,7 @@ class Server {
      * @param {number} id The item's id.
      */
     unloadItem(id) {
-        axios.post(url + `/unloadItem/${id}`, { headers: this._createHeaders() })
+        this._post(url + `/unloadItem/${id}`)
             .then(this._onResponse)
             .catch(this._onError);
     }
@@ -89,6 +89,14 @@ class Server {
             'Content-Type': 'application/json',
             'token': token
         };
+    }
+
+    _post(url) {
+        return axios({
+            method: 'post',
+            url: url,
+            headers: this._createHeaders()
+        });
     }
 
     _onResponse(response) {
