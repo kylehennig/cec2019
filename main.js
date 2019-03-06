@@ -7,7 +7,6 @@ class Board {
     }
 
     async setup(response, server) {
-        console.log(response);
         this.constants = response.constants;
         this.server = server;
         this.response = response;
@@ -50,25 +49,18 @@ class Board {
             }
 
             // Next Rect to search
-            console.log("SHould be at the next one");
             let dest = this.nextRect();
-            console.log(dest);
             if (dest === null) {
-                console.log("dest rect is NUll");
                 this.response = await this.server.getInstance();
                 break;
             }
             let rectClear = false;
-            console.log("TEST0");
             await this.move(dest.x, dest.y);
-            console.log("Test1");
 
             this.response = await this.server.getInstance();
-console.log("Test2");
             // Scan Rect
             await this.server.scanArea();
             this.response = await this.server.getInstance();
-console.log("Test3");
             while (!rectClear) {
                 // Pick up all items
                 await this.collectRect(dest);
@@ -84,15 +76,13 @@ console.log("Test3");
 
                 rectClear = this.checkClear();
             }
-            for(let i = 0; i < this.rectangles.length; i++){
-                if((this.rectangles[i].center.x == dest.x)&&(this.rectangles[i].center.y == dest.y)){
+            for (let i = 0; i < this.rectangles.length; i++) {
+                if ((this.rectangles[i].center.x == dest.x) && (this.rectangles[i].center.y == dest.y)) {
                     this.rectangles[i].done = true;
                 }
             }
-            console.log("Test4");
 
         }
-        console.log("EXIT WHILE");
         await this.finalDropOff();
     }
 
@@ -165,7 +155,6 @@ console.log("Test3");
             }
             this.response = await this.server.getInstance();
         }
-        console.log(this.response);
         await this.server.finish();
     }
 
@@ -207,11 +196,6 @@ console.log("Test3");
                 }
             }
             this.response = await this.server.getInstance();
-            // this.response.itemsHeld.forEach(async (item) => {
-            //     if (item.type == "ORGANIC") {
-            //         await this.server.unloadItem(item.id);
-            //     }
-            // });
         }
         else if (this.constants.BIN_LOCATION.GARBAGE.x == this.response.location.x && this.constants.BIN_LOCATION.GARBAGE.y == this.response.location.y) {
             for (let i = 0; i < this.response.itemsHeld.length; i++) {
@@ -225,11 +209,6 @@ console.log("Test3");
                 }
             }
             this.response = await this.server.getInstance();
-            // this.response.itemsHeld.forEach(async (item) => {
-            //     if (item.type == "GARBAGE") {
-            //         await this.server.unloadItem(item.id);
-            //     }
-            // });
         } else if (this.constants.BIN_LOCATION.RECYCLE.x == this.response.location.x && this.constants.BIN_LOCATION.RECYCLE.y == this.response.location.y) {
             for (let i = 0; i < this.response.itemsHeld.length; i++) {
                 if (binRecycle >= this.constants.BIN_CAPACITY.RECYCLE) {
@@ -242,26 +221,15 @@ console.log("Test3");
                 }
             }
             this.response = await this.server.getInstance();
-            // this.response.itemsHeld.forEach(async (item) => {
-            //     if (item.type == "RECYCLE") {
-            //         await this.server.unloadItem(item.id);
-            //     }
-            // });
         }
         this.response = await this.server.getInstance();
     }
 
     async collectItems() {
         this.response = await this.server.getInstance();
-        // PLEASE NOTE
-        // PLEASE NOTE
-        // itemsLocated may change after every scan, may want array of known item
-        // PLEASE NOTE
-        // PLEASE NOTE
         for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
                 if (item.coveredBy === undefined || this.isHeld(item.coveredBy)) {
-                    console.log("ITEM COLLECT");
                     await this.server.collectItem(item.id);
                 }
             }
@@ -269,7 +237,6 @@ console.log("Test3");
         this.response = await this.server.getInstance();
         for (const item of this.response.itemsLocated) {
             if (item.x == this.response.location.x && item.y == this.response.location.y) {
-                console.log("reapppppeat");
                 await this.collectItems();
                 break;
             }
@@ -378,12 +345,9 @@ console.log("Test3");
 
         // Update board state
         this.response = await this.server.getInstance();
-        console.log("AFTER MOVE:");
-        console.log(this.response);
     }
 
     async pickCorner() {
-
         let destY = 0;
         let destX = 0;
 
@@ -394,7 +358,7 @@ console.log("Test3");
             }
             //Bottom
         } else {
-            destY = this.constants.ROOM_DIMENSIONS.Y_MIN +1;
+            destY = this.constants.ROOM_DIMENSIONS.Y_MIN + 1;
         }
 
         //Right
@@ -406,11 +370,8 @@ console.log("Test3");
         } else {
             destX = this.constants.ROOM_DIMENSIONS.X_MIN + this.constants.SCAN_RADIUS;
         }
-        console.log("INNERTEST0");
         await this.move(destX, destY);
         this.response = await this.server.getInstance();
-        console.log("INNERTEST1");
-
     }
 
     /**
@@ -440,10 +401,8 @@ console.log("Test3");
      * Collects all items inside a rectangle.
      */
     async collectRect(rectCenter) {
-        console.log("CALL 1");
         while (true) {
             if (this.response.itemsLocated.length === 0) {
-                console.log("EXIT 1");
                 return;
             }
             // Pickup all items in rect
@@ -459,13 +418,11 @@ console.log("Test3");
                 }
             });
             if (shortestDistance === null) {
-                console.log("Exit 2");
                 // All items in rectangle collected
                 return;
             }
             // Move to the closest item and collect all possible items there
             await this.move(x, y);
-            console.log("I WANT TO COLLECT:");
             await this.collectItems();
             this.response = await this.server.getInstance();
         }
